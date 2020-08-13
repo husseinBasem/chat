@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'chat_screen.dart';
+
 void main() {
   runApp(Chat());
 }
@@ -15,7 +17,8 @@ class Chat extends StatelessWidget {
           body1: TextStyle(color: Colors.black45)
         )
       ),
-      home: Chat(),
+      home: ChatScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
