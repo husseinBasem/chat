@@ -1,6 +1,9 @@
+import 'package:chat/registration_screen.dart';
+import 'package:chat/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_screen.dart';
+import 'login_screen.dart';
 
 void main() {
   runApp(Chat());
@@ -14,10 +17,17 @@ class Chat extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
         textTheme: TextTheme(
-          body1: TextStyle(color: Colors.black45)
+          bodyText1: TextStyle(color: Colors.black45)
         )
       ),
-      home: ChatScreen(),
+      initialRoute: 'welcome_screen',
+      routes: {
+        'welcome_screen': (context)=> WelcomeScreen(),
+        'chat_screen' : (context)=> ChatScreen(),
+        'login_screen' : (context)=> LoginSceen(),
+        'registration_screen' : (context) => RegistrationScreen(),
+
+      },
       debugShowCheckedModeBanner: false,
     );
   }
