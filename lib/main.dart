@@ -15,11 +15,7 @@ class Chat extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.dark().copyWith(
-        textTheme: TextTheme(
-          bodyText1: TextStyle(color: Colors.black45)
-        )
-      ),
+
       initialRoute: 'welcome_screen',
       routes: {
         'welcome_screen': (context)=> WelcomeScreen(),
