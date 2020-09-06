@@ -41,6 +41,7 @@ class _ChatScreenState extends State<ChatScreen>{
 
 
 
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -64,11 +65,40 @@ class _ChatScreenState extends State<ChatScreen>{
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+
+              StreamBuilder<QuerySnapshot>(
+                stream: _fireStore.collection('text').snapshots(),
+                  builder:(context,snapshot){
+                  if (!snapshot.hasData){
+                    return Center(
+                      child:CircularProgressIndicator(
+                        backgroundColor: Colors.lightBlueAccent,
+                      ) ,
+                    );
+                  }
+
+                  final messages = snapshot.data.docs;
+                  List<Text> messageWidgets = [];
+                  for(var message in messages){
+                    final messageText = message.data()['message'];
+                    final messageSender = message.data()['sender'];
+                    final messageWidget = Text('$messageText from $messageSender');
+                    messageWidgets.add(messageWidget);
+                  }
+                  return Column(
+                    children: messageWidgets,
+
+                  );
+
+                  }
+              ),
+
               Container(
                 decoration:kMessageContainerDecoration,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+
                     Expanded(
                         child: TextField(
                           onChanged: (value) {
