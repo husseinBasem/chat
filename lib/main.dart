@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'chat_screen.dart';
 import 'login_screen.dart';
 
-void main()  async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(Chat());
@@ -18,8 +18,9 @@ class Chat extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+//      home: RegistrationScreen(),
 
-      initialRoute: 'welcome_screen',
+      initialRoute: 'registration_screen',
       routes: {
         'welcome_screen': (context)=> WelcomeScreen(),
         'chat_screen' : (context)=> ChatScreen(),

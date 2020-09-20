@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,8 +15,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
 
   bool showSpinner = false;
-  String _Email,_Password;
+  String _Email,_Password,_FirstName,_LastName,_UserName;
   final _auth = FirebaseAuth.instance;
+  final _fireStore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,16 +27,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         inAsyncCall: showSpinner,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
+            shrinkWrap: true,
+
             children: <Widget>[
 
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('images/logo.png'),
+              Container(
+                child: Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 200.0,
+                    child: Image.asset('images/logo.png'),
+                  ),
                 ),
               ),
               SizedBox(height: 48.0,),
@@ -51,7 +55,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               SizedBox(height: 8.0,),
 
               TextField(
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.text,
                 textAlign: TextAlign.center,
                 obscureText: true,
                 onChanged: (value) {
@@ -59,6 +63,39 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                 },
                 decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Password'),
+              ),
+              SizedBox(height: 8.0,),
+
+              TextField(
+                keyboardType: TextInputType.text,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  _FirstName = value;
+
+                },
+                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your First Name'),
+              ),
+              SizedBox(height: 8.0,),
+
+              TextField(
+                keyboardType: TextInputType.text,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  _LastName = value;
+
+                },
+                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Last Name'),
+              ),
+              SizedBox(height: 8.0,),
+
+              TextField(
+                keyboardType: TextInputType.text,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  _UserName = value;
+
+                },
+                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your User'),
               ),
               SizedBox(height: 24.0,),
               RoundedButton(
@@ -71,6 +108,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     try {
                       final newUser = await _auth.createUserWithEmailAndPassword(
                           email: _Email, password: _Password);
+                      _fireStore.collection('users').add({
+                        'firstName': _FirstName,
+                        'lastName':  _LastName,
+                        'user': _UserName,
+                        'uid': newUser.user.uid
+                      }
+                          ).catchError((error)=> print("Failed to add user: $error"));
 
                       if (newUser != null) {
                         Navigator.pushNamed(context, 'chat_screen');
@@ -87,6 +131,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 color: Colors.blueAccent,
                 text: 'Register',
               ),
+
+
 
 
             ],
