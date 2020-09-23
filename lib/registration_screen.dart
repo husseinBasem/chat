@@ -13,9 +13,8 @@ class RegistrationScreen extends StatefulWidget{
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
 
-
   bool showSpinner = false;
-  String _Email,_Password,_FirstName,_LastName,_UserName;
+  String _Email,_Password,_Name,_UserName,_errorEmail,_errorPassword,_errorName,_errorUser;
   final _auth = FirebaseAuth.instance;
   final _fireStore = FirebaseFirestore.instance;
   @override
@@ -23,123 +22,179 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return Scaffold(
 
       backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: ListView(
-            shrinkWrap: true,
+      body: SafeArea(
 
-            children: <Widget>[
+        child: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0,vertical: 24.0),
+            child: ListView(
+              shrinkWrap: true,
 
-              Container(
-                child: Hero(
-                  tag: 'logo',
-                  child: Container(
-                    height: 200.0,
-                    child: Image.asset('images/logo.png'),
+              children: <Widget>[
+
+                Container(
+                  child: Hero(
+                    tag: 'logo',
+                    child: Container(
+                      height: 200.0,
+                      child: Image.asset('images/logo.png'),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 48.0,),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
+                SizedBox(height: 48.0,),
+                TextField(
+                  keyboardType: TextInputType.emailAddress,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
 
-                  _Email = value;
-
-                },
-                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Email'),
-              ),
-              SizedBox(height: 8.0,),
-
-              TextField(
-                keyboardType: TextInputType.text,
-                textAlign: TextAlign.center,
-                obscureText: true,
-                onChanged: (value) {
-                  _Password = value;
-
-                },
-                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Password'),
-              ),
-              SizedBox(height: 8.0,),
-
-              TextField(
-                keyboardType: TextInputType.text,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  _FirstName = value;
-
-                },
-                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your First Name'),
-              ),
-              SizedBox(height: 8.0,),
-
-              TextField(
-                keyboardType: TextInputType.text,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  _LastName = value;
-
-                },
-                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Last Name'),
-              ),
-              SizedBox(height: 8.0,),
-
-              TextField(
-                keyboardType: TextInputType.text,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  _UserName = value;
-
-                },
-                decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your User'),
-              ),
-              SizedBox(height: 24.0,),
-              RoundedButton(
-                  onPressed: () async{
-
-                    setState(() {
-                      showSpinner = true;
-                    });
-
-                    try {
-                      final newUser = await _auth.createUserWithEmailAndPassword(
-                          email: _Email, password: _Password);
-                      _fireStore.collection('users').add({
-                        'firstName': _FirstName,
-                        'lastName':  _LastName,
-                        'user': _UserName,
-                        'uid': newUser.user.uid
-                      }
-                          ).catchError((error)=> print("Failed to add user: $error"));
-
-                      if (newUser != null) {
-                        Navigator.pushNamed(context, 'chat_screen');
-                      }
-                    }catch(e){
-                      print(e.toString());
-                    }
-
-                    setState(() {
-                      showSpinner = false;
-                    });
+                    _Email = value;
 
                   },
-                color: Colors.blueAccent,
-                text: 'Register',
-              ),
+
+                  decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Email',errorText:_errorEmail),
+                ),
+                SizedBox(height: 8.0,),
+
+
+
+                TextField(
+                  keyboardType: TextInputType.text,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    _Name = value;
+
+                  },
+                  decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Name'),
+                ),
+                SizedBox(height: 8.0,),
+
+                TextField(
+                  keyboardType: TextInputType.text,
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  onChanged: (value) {
+                    _Password = value;
+
+                  },
+                  decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your Password',errorText: _errorPassword),
+                ),
+                SizedBox(height: 8.0,),
+
+
+
+                TextField(
+                  keyboardType: TextInputType.text,
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    _UserName = value;
+                  },
+
+                  decoration: KTextFieldDecoration.copyWith(hintText: 'Enter Your User',errorText: _errorUser),
+                ),
+                SizedBox(height: 24.0,),
+                RoundedButton(
+                    onPressed: () async{
+
+
+
+                      setState(() {
+                        showSpinner = true;
+                      });
+
+                      try {
+                       // _errorUser= '';
+
+                        _fireStore.collection('users').get().then((QuerySnapshot snapshot) {
+                          snapshot.docs.forEach((existsUser) {
+                            if (_UserName == existsUser.data()['User']){
+
+                              _errorUser = 'The User Already Exists';
+                              setState(() {
+                                showSpinner = false;
+                              });
+
+                              return;
+                            }
+                          });
+
+                        });
+
+                        final newUser = await _auth.createUserWithEmailAndPassword(
+                            email: _Email, password: _Password);
+                        _fireStore.collection('users').add({
+                          'Name': _Name.trim(),
+                          'User': _UserName.trim(),
+                          'Uid': newUser.user.uid
+                        }
+                            ).catchError((error)=> print("Failed to add user: $error"));
+
+                        if (newUser != null || _errorUser.isEmpty == false) {
+                          Navigator.pushNamed(context, 'chat_screen');
+                        }
+                      }
+                      catch(e){
+                        print(e.toString());
+                        if(e.toString().contains('email-already-in-use')){
+                          _errorEmail = 'Email Aleady In use';
+                          setState(() {
+                            showSpinner = false;
+                          });
+                          return;
+                        }
+                        if(e.toString().contains('invalid-email')){
+                          _errorEmail = 'Please Use Correct Email';
+                          setState(() {
+                            showSpinner = false;
+                          });
+                          return;
+                        }
+                        if (e.toString().contains('Given String is empty')){
+                          _errorEmail = 'can\'t leave this field empty' ;
+                          setState(() {
+                            showSpinner = false;
+                          });
+                          return;
+
+                        }
+                        if (e.toString().contains('weak-password')){
+                          _errorPassword ='Please Write at Least 6 characters';
+                          setState(() {
+                            showSpinner = false;
+                          });
+                          return;
+
+                        }
 
 
 
 
-            ],
+
+                      }
+
+                      setState(() {
+                        showSpinner = false;
+                      });
+
+                    },
+                  color: Colors.blueAccent,
+                  text: 'Register',
+                ),
+
+
+
+
+
+
+              ],
+            ),
           ),
         ),
       ),
 
     );
   }
+
+
+
 }
