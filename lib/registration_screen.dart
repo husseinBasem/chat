@@ -30,10 +30,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: ModalProgressHUD(
           inAsyncCall: showSpinner,
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: EdgeInsets.all(10.0),
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
+                SizedBox(
+                  height: 24.0,
+                ),
                 Container(
                   child: Hero(
                     tag: 'logo',
@@ -49,7 +52,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   textAlign: TextAlign.center,
-                  onChanged: (value) => _email = value,
+                  onChanged: (value) {
+                    _email = value;
+                    _errorEmail = null;
+                  },
                   decoration: KTextFieldDecoration.copyWith(
                       hintText: 'Enter Your Email', errorText: _errorEmail),
                 ),
@@ -70,7 +76,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   keyboardType: TextInputType.text,
                   textAlign: TextAlign.center,
                   obscureText: true,
-                  onChanged: (value) => _password = value,
+                  onChanged: (value) {
+                    _password = value;
+                    _errorPassword = null;
+                  },
                   decoration: KTextFieldDecoration.copyWith(
                       hintText: 'Enter Your Password',
                       errorText: _errorPassword),
@@ -81,7 +90,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 TextField(
                   keyboardType: TextInputType.text,
                   textAlign: TextAlign.center,
-                  onChanged: (value) => _userName = value,
+                  onChanged: (value) {
+                    _userName = value;
+                    _errorUser = null;
+                  },
                   decoration: KTextFieldDecoration.copyWith(
                       hintText: 'Enter Your User', errorText: _errorUser),
                 ),
@@ -92,6 +104,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   onPressed: addUser,
                   color: Colors.blueAccent,
                   text: 'Register',
+                ),
+                SizedBox(
+                  height: 24.0,
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'login_screen');
+                  },
+                  child: Text('Switch to Login IN'),
                 ),
               ],
             ),
@@ -106,6 +127,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         .collection('users')
         .where('User', isEqualTo: username)
         .get();
+
     return result.docs.isEmpty;
   }
 
@@ -127,14 +149,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _password);
-      _fireStore.collection('users').add({
-        'Name': _name.trim(),
-        'User': _userName.trim(),
-        'Uid': newUser.user.uid
-      }).catchError((error) => print("Failed to add user: $error"));
+      _fireStore
+          .collection('users')
+          .add({
+            'Name': _name.trim(),
+            'User': _userName.trim(),
+            'Uid': newUser.user.uid
+          })
+          .catchError((error) => print("Failed to add user: $error"));
 
       if (newUser != null) {
-        Navigator.pushNamed(context, 'chat_screen');
+        Navigator.pushNamed(context, 'chat_list');
       }
     } catch (e) {
       print(e.toString());
@@ -144,29 +169,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           showSpinner = false;
         });
         return;
-      }
-      else if (e.toString().contains('invalid-email')) {
+      } else if (e.toString().contains('invalid-email')) {
         _errorEmail = 'Please Use Correct Email';
         setState(() {
           showSpinner = false;
         });
         return;
-      }
-      else if (e.toString().contains('Given String is empty')) {
+      } else if (e.toString().contains('Given String is empty')) {
         _errorEmail = 'can\'t leave this field empty';
         setState(() {
           showSpinner = false;
         });
         return;
-      }
-      else if (e.toString().contains('weak-password')) {
+      } else if (e.toString().contains('weak-password')) {
         _errorPassword = 'Please Write at Least 6 characters';
         setState(() {
           showSpinner = false;
         });
         return;
-      }
-      else
+      } else
         print(e.toString());
     }
 

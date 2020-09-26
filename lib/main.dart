@@ -3,6 +3,7 @@ import 'package:chat/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'chat_list.dart';
 import 'chat_screen.dart';
 import 'login_screen.dart';
 
@@ -20,12 +21,13 @@ class Chat extends StatelessWidget {
       title: 'Flutter Demo',
 //      home: RegistrationScreen(),
 
-      initialRoute: 'registration_screen',
+      initialRoute: 'welcome_screen',
       routes: {
         'welcome_screen': (context)=> WelcomeScreen(),
         'chat_screen' : (context)=> ChatScreen(),
-        'login_screen' : (context)=> LoginSceen(),
+        'login_screen' : (context)=> LoginScreen(),
         'registration_screen' : (context) => RegistrationScreen(),
+        'chat_list' : (context) => ChatList(),
 
       },
       debugShowCheckedModeBanner: false,
