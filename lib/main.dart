@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 
 import 'chat_list.dart';
 import 'chat_screen.dart';
+import 'info_screen.dart';
 import 'login_screen.dart';
+import 'search_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,7 @@ class Chat extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-//      home: RegistrationScreen(),
+//      home: Info(),
 
       initialRoute: 'welcome_screen',
       routes: {
@@ -28,6 +30,8 @@ class Chat extends StatelessWidget {
         'login_screen' : (context)=> LoginScreen(),
         'registration_screen' : (context) => RegistrationScreen(),
         'chat_list' : (context) => ChatList(),
+        'search_screen': (context) => SearchScreen(),
+        'info_screen': (context) => Info(),
 
       },
       debugShowCheckedModeBanner: false,
