@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChatList extends StatefulWidget {
@@ -6,6 +8,15 @@ class ChatList extends StatefulWidget {
 }
 
 class _ChatListState extends State<ChatList> {
+
+  @override
+  void initState() {
+    super.initState();
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +31,10 @@ class _ChatListState extends State<ChatList> {
               children: <Widget>[
                 
                 Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
                   height: 25.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Chats',style: TextStyle(color: Colors.white,fontSize: 20.0),)
-                    ],
-                  ),
+                  child: Text('Chats',style: TextStyle(color: Colors.white,fontSize: 20.0),),
                 ),
                 SizedBox(height: 10.0,),
 
@@ -65,118 +73,91 @@ class _ChatListState extends State<ChatList> {
 
 
                 SizedBox(height: 10.0,),
-                Container(
-                  color: Colors.black45,
-                  child: ListTile(
+                
+                
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('ChatRoom').orderBy('timeStamp',descending: true).where('users'  , arrayContains: FirebaseAuth.instance.currentUser.email.toString()).snapshots(),
 
-                    title: Text('hussein basem',style: TextStyle(color: Colors.white),),
-                    subtitle: Text('hello how are you',style: TextStyle(color: Colors.white70),),
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: Text('H',style: TextStyle(color: Colors.white,fontSize: 35.0),),
+                  builder: (context, snapshot) {
 
-                    ),
-                    trailing:  CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.redAccent,
-                      child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20.0),),
-                    ),
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasData) {
 
 
-                  ),
-                ),
-                Divider(height: 0.0,color: Colors.white10,thickness: 1.0,indent: 75.0,endIndent: 10.0,),
-                Container(
-                  color: Colors.black45,
+                      return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.docs.length,
+                        itemBuilder: ( context,  index) {
+
+                         return Column(
+                            children: <Widget>[
+                              Container(
+                                color: Colors.black45,
+                                child: ListTile(
+
+                                  title: Text('hussein basem', style: TextStyle(
+                                      color: Colors.white),),
+                                  subtitle: Text('hello how are you', style: TextStyle(
+                                      color: Colors.white70),),
+                                  leading: CircleAvatar(
+                                    radius: 25.0,
+                                    backgroundColor: Colors.lightBlueAccent,
+                                    child: Text('H', style: TextStyle(
+                                        color: Colors.white, fontSize: 35.0),),
+
+                                  ),
+                                  trailing: CircleAvatar(
+                                    radius: 20.0,
+                                    backgroundColor: Colors.redAccent,
+                                    child: Text('1', style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),),
+                                  ),
 
 
-                  child: ListTile(
-                    title: Text('hussein basem',style: TextStyle(color: Colors.white),),
-                    subtitle: Text('hello how are you',style: TextStyle(color: Colors.white70),),
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: Text('H',style: TextStyle(color: Colors.white,fontSize: 35.0),),
+                                ),
+                              ),
 
-                    ),
-                    trailing:  CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.redAccent,
-                      child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20.0),),
-                    ),
+                              Divider(height: 0.0,
+                                color: Colors.white10,
+                                thickness: 1.0,
+                                indent: 75.0,
+                                endIndent: 10.0,)
+                            ],
+                          );
 
 
-                  ),
-                ),
-                Divider(height: 0.0,color: Colors.white10,thickness: 1.0,indent: 75.0,endIndent: 10.0,),
-                Container(
-                  color: Colors.black45,
+
+                        },
 
 
-                  child: ListTile(
-                    title: Text('hussein basem',style: TextStyle(color: Colors.white),),
-                    subtitle: Text('hello how are you',style: TextStyle(color: Colors.white70),),
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: Text('H',style: TextStyle(color: Colors.white,fontSize: 35.0),),
-
-                    ),
-                    trailing:  CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.redAccent,
-                      child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20.0),),
-                    ),
+                      );
 
 
-                  ),
-                ),
-                Divider(height: 0.0,color: Colors.white10,thickness: 1.0,indent: 75.0,endIndent: 10.0,),
-                Container(
-                  color: Colors.black45,
 
 
-                  child: ListTile(
-                    title: Text('hussein basem',style: TextStyle(color: Colors.white),),
-                    subtitle: Text('hello how are you',style: TextStyle(color: Colors.white70),),
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: Text('H',style: TextStyle(color: Colors.white,fontSize: 35.0),),
+                  } else {
+                      return Container();
+                    }
+
+
+
+
+
+
+
+    }
 
                     ),
-                    trailing:  CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.redAccent,
-                      child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20.0),),
-                    ),
 
 
-                  ),
-                ),
-                Divider(height: 0.0,color: Colors.white10,thickness: 1.0,indent: 75.0,endIndent: 10.0,),
-                Container(
-                  color: Colors.black45,
 
 
-                  child: ListTile(
-                    title: Text('hussein basem',style: TextStyle(color: Colors.white),),
-                    subtitle: Text('hello how are you',style: TextStyle(color: Colors.white70),),
-                    leading: CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.lightBlueAccent,
-                      child: Text('H',style: TextStyle(color: Colors.white,fontSize: 35.0),),
-                    ),
-                    trailing:  CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.redAccent,
-                      child: Text('1',style: TextStyle(color: Colors.white,fontSize: 20.0),),
-                    ),
 
 
-                  ),
-                ),
               ],
             ),
           )

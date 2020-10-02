@@ -148,13 +148,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
 
       final newUser = await _auth.createUserWithEmailAndPassword(
-          email: _email, password: _password);
+          email: _email.trim(), password: _password.trim());
       _fireStore
           .collection('users')
           .add({
             'Name': _name.trim(),
             'User': _userName.trim(),
-            'Uid': newUser.user.uid
+            'Uid': newUser.user.uid,
+            'Email' : _email.trim(),
           })
           .catchError((error) => print("Failed to add user: $error"));
 

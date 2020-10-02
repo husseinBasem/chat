@@ -31,7 +31,6 @@ class Chat extends StatelessWidget {
         'registration_screen' : (context) => RegistrationScreen(),
         'chat_list' : (context) => ChatList(),
         'search_screen': (context) => SearchScreen(),
-        'info_screen': (context) => Info(),
 
       },
       debugShowCheckedModeBanner: false,

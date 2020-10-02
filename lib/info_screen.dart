@@ -1,14 +1,24 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 class Info extends StatefulWidget {
+
+  Info({this.email,this.roomId});
+   final String roomId, email;
+
   @override
   _InfoState createState() => _InfoState();
 }
 
 class _InfoState extends State<Info > {
+
+
+
+
   File _image;
   final picker = ImagePicker();
 
@@ -116,7 +126,10 @@ class _InfoState extends State<Info > {
 
               SizedBox(height: 20),
               FlatButton(
-                  onPressed: ()=>print('chating'),
+                  onPressed: (){
+                    startConversion(email:widget.email ,roomId:widget.roomId  );
+                    Navigator.pushNamed(context, 'chat_screen');
+                  },
                   color: Colors.blueGrey,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -168,4 +181,44 @@ class _InfoState extends State<Info > {
       ),
     );
   }
+
+  creatChatRoom(String roomId, chatRoomMap){
+    
+    FirebaseFirestore.instance
+        .collection('ChatRoom')
+        .doc(roomId)
+        .set(chatRoomMap)
+        .catchError((onError){
+          print(onError);
+    });
+  }
+
+  startConversion({ String email,String roomId })  {
+
+    List<String> users = [email, FirebaseAuth.instance.currentUser.email];
+    Map<String,bool> anonymous = {
+
+      email:false,
+      FirebaseAuth.instance.currentUser.email:false
+
+    };
+
+    Map<String,dynamic> chatRoomMap = {
+
+      "users" : users,
+      "chatRoomId" : roomId,
+      "timeStamp" : DateTime.now().toString().toString(),
+      "anonymous" : anonymous
+    };
+
+    creatChatRoom(roomId,chatRoomMap);
+
+
+
+  }
+
+
+
+
+
 }
