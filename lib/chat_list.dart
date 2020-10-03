@@ -18,7 +18,7 @@ class _ChatListState extends State<ChatList> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     return Scaffold(
       backgroundColor: Colors.white10,
 
@@ -84,7 +84,9 @@ class _ChatListState extends State<ChatList> {
                       return Center(
                         child: CircularProgressIndicator(),
                       );
-                    } else if (snapshot.hasData) {
+                    } else if (snapshot.hasData)   {
+
+
 
 
                       return ListView.builder(
@@ -92,42 +94,15 @@ class _ChatListState extends State<ChatList> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.docs.length,
                         itemBuilder: ( context,  index) {
+                          if(FirebaseAuth.instance.currentUser == snapshot.data.docs[index].data()['users'][1]){
 
-                         return Column(
-                            children: <Widget>[
-                              Container(
-                                color: Colors.black45,
-                                child: ListTile(
+                            return ChatsListTile(snapshot.data.docs[index].data()['users'][0]);
 
-                                  title: Text('hussein basem', style: TextStyle(
-                                      color: Colors.white),),
-                                  subtitle: Text('hello how are you', style: TextStyle(
-                                      color: Colors.white70),),
-                                  leading: CircleAvatar(
-                                    radius: 25.0,
-                                    backgroundColor: Colors.lightBlueAccent,
-                                    child: Text('H', style: TextStyle(
-                                        color: Colors.white, fontSize: 35.0),),
-
-                                  ),
-                                  trailing: CircleAvatar(
-                                    radius: 20.0,
-                                    backgroundColor: Colors.redAccent,
-                                    child: Text('1', style: TextStyle(
-                                        color: Colors.white, fontSize: 20.0),),
-                                  ),
+                          }else{
+                            return Container();
+                          }
 
 
-                                ),
-                              ),
-
-                              Divider(height: 0.0,
-                                color: Colors.white10,
-                                thickness: 1.0,
-                                indent: 75.0,
-                                endIndent: 10.0,)
-                            ],
-                          );
 
 
 
@@ -162,6 +137,97 @@ class _ChatListState extends State<ChatList> {
             ),
           )
       ),
+    );
+  }
+
+
+   getUserByEmail(String email) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .where("Email", isEqualTo: email)
+        .get();
+  }
+
+
+}
+
+class ChatsListTile extends StatelessWidget {
+   ChatsListTile(this.recevierEmail) ;
+
+   String recevierEmail;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('users').where('Email',isEqualTo: recevierEmail).snapshots(),
+
+      builder: ( context,  snapshot) {
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator(),);
+
+        } else if (snapshot.hasData){
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.docs.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: ( context,  index) {
+
+              return Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.black45,
+                    child: ListTile(
+
+                      title: Text(snapshot.data.docs[index].data()['Name'], style: TextStyle(
+                          color: Colors.white),),
+                      subtitle: Text('hello how are you', style: TextStyle(
+                          color: Colors.white70),),
+                      leading: CircleAvatar(
+                        radius: 25.0,
+                        backgroundColor: Colors.lightBlueAccent,
+                        child: Text('H', style: TextStyle(
+                            color: Colors.white, fontSize: 35.0),),
+
+                      ),
+                      trailing: CircleAvatar(
+                        radius: 20.0,
+                        backgroundColor: Colors.redAccent,
+                        child: Text('1', style: TextStyle(
+                            color: Colors.white, fontSize: 20.0),),
+                      ),
+
+
+                    ),
+                  ),
+
+                  Divider(height: 0.0,
+                    color: Colors.white10,
+                    thickness: 1.0,
+                    indent: 75.0,
+                    endIndent: 10.0,)
+                ],
+              );
+
+
+
+            },
+
+          );
+
+        } else{
+          return Container();
+        }
+
+
+
+
+
+
+
+      },
+
     );
   }
 }
