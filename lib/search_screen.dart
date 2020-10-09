@@ -13,7 +13,9 @@ class SearchScreen extends StatefulWidget {
 
 
 class _SearchScreenState extends State<SearchScreen> {
-  String _search  ;
+  String _search;
+  int firstLetter =0;
+  int secondLetter=1;
 
 
 
@@ -184,9 +186,15 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   getChatID(String firstUser, String secondUser) {
-    if (firstUser.substring(0, 1).codeUnitAt(0) >= secondUser.substring(0, 1).codeUnitAt(0)) {
+
+    if (firstUser.substring(firstLetter, secondLetter).codeUnitAt(0) > secondUser.substring(firstLetter, secondLetter).codeUnitAt(0)) {
       return '$firstUser\_$secondUser';
-    } else{
+    } else if (firstUser.substring(firstLetter, secondLetter).codeUnitAt(0) == secondUser.substring(firstLetter, secondLetter).codeUnitAt(0)) {
+      firstLetter++;
+      secondLetter++;
+      getChatID(firstUser, secondUser);
+
+    }else{
 
       return '$secondUser\_$firstUser';
     }

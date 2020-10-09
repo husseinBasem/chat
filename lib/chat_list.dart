@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'info_screen.dart';
+
 class ChatList extends StatefulWidget {
   @override
   _ChatListState createState() => _ChatListState();
@@ -9,18 +11,25 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
 
-  @override
-  void initState() {
-    super.initState();
 
-
-
-  }
 
   @override
   Widget build(BuildContext context)  {
     return Scaffold(
       backgroundColor: Colors.white10,
+      floatingActionButton: FloatingActionButton(
+          onPressed: (){
+
+            Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context) => Info(email: FirebaseAuth.instance.currentUser.email,roomId: null,),
+                ));
+
+          },
+        child: Icon(Icons.settings,color: Colors.white,),
+        backgroundColor: Colors.white12,
+        
+      ),
 
      
 
@@ -94,7 +103,7 @@ class _ChatListState extends State<ChatList> {
                         shrinkWrap: true,
                         itemCount: snapshot.data.docs.length,
                         itemBuilder: ( context,  index) {
-                          if(FirebaseAuth.instance.currentUser == snapshot.data.docs[index].data()['users'][1]){
+                          if(FirebaseAuth.instance.currentUser.email == snapshot.data.docs[index].data()['users'][1]){
 
                             return ChatsListTile(snapshot.data.docs[index].data()['users'][0]);
 
@@ -152,14 +161,14 @@ class _ChatListState extends State<ChatList> {
 }
 
 class ChatsListTile extends StatelessWidget {
-   ChatsListTile(this.recevierEmail) ;
+   ChatsListTile(this.receiverEmail) ;
 
-   String recevierEmail;
+   String receiverEmail;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('users').where('Email',isEqualTo: recevierEmail).snapshots(),
+      stream: FirebaseFirestore.instance.collection('users').where('Email',isEqualTo: receiverEmail).snapshots(),
 
       builder: ( context,  snapshot) {
 
@@ -197,6 +206,7 @@ class ChatsListTile extends StatelessWidget {
                         child: Text('1', style: TextStyle(
                             color: Colors.white, fontSize: 20.0),),
                       ),
+                      onTap: (){},
 
 
                     ),

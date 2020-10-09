@@ -11,11 +11,13 @@ const kMessageTextFileDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
   hintText: 'Type Your Message Here...',
   border: InputBorder.none
+
 );
 
 const kMessageContainerDecoration = BoxDecoration(
   border: Border(
     top: BorderSide( color: Colors.lightBlueAccent, width: 2.0),
+
   ),
 
 );
