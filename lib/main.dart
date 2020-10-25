@@ -1,12 +1,12 @@
-import 'package:chat/registration_screen.dart';
+import 'package:chat/Screens/registration_screen.dart';
 import 'package:chat/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'chat_list.dart';
+import 'Screens/chat_list.dart';
 import 'chat_screen.dart';
-import 'info_screen.dart';
-import 'login_screen.dart';
+import 'Screens/login_screen.dart';
+import 'Screens/edit_screen.dart';
 import 'search_screen.dart';
 
 void main() async {
@@ -31,6 +31,7 @@ class Chat extends StatelessWidget {
         'registration_screen' : (context) => RegistrationScreen(),
         'chat_list' : (context) => ChatList(),
         'search_screen': (context) => SearchScreen(),
+        'edit_screen':(context) => Edit(),
 
       },
       debugShowCheckedModeBanner: false,

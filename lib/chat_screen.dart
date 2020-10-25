@@ -1,10 +1,11 @@
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/constans.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+
 
 
 final _fireStore = FirebaseFirestore.instance;
@@ -16,10 +17,12 @@ User  loggedInUser;
 
 class ChatScreen extends StatefulWidget{
 
-  ChatScreen({this.name,this.roomId,this.image});
+  ChatScreen({this.name,this.roomId,this.image,this.token,this.email});
   final String name;
   final String roomId;
   final String image;
+  final String token;
+  final String email;
 
   _ChatScreenState createState() => _ChatScreenState();
 
@@ -30,15 +33,29 @@ Map<String, String> messages = {};
 
 class _ChatScreenState extends State<ChatScreen>{
   final messageTextController = TextEditingController();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   final _auth = FirebaseAuth.instance;
   String message;
+  int numberOFmessagesArenotSeen=1;
+
 
 
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
+    messagesSeen(widget.roomId);
+    chatWith();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+     closeScreen();
+
   }
 
   void getCurrentUser() {
@@ -147,10 +164,10 @@ class _ChatScreenState extends State<ChatScreen>{
                               decoration: kMessageTextFileDecoration,
                             ),
                           ),
-                          FlatButton(onPressed: (){
+                          FlatButton(onPressed: () async{
                             messageTextController.clear();
 
-                            addConversationMessages(widget.roomId,messages);
+                            addConversationMessages(widget.roomId,message,messages);
 
 //                      _fireStore.collection('text').add({
 //                        'sender': loggedInUser.email,
@@ -183,28 +200,124 @@ class _ChatScreenState extends State<ChatScreen>{
 
 
   addConversationMessages(
-      String roomid, Map<String, String> messageMap) async {
-  //  DocumentReference documentReference =
-    await FirebaseFirestore.instance
+      String roomid,message, Map<String, String> messageMap) async {
+
+    List<String> users = [widget.email,  FirebaseAuth.instance.currentUser.email];
+
+    await _fireStore
         .collection("ChatRoom")
         .doc(roomid)
         .collection("chats")
         .add(messageMap)
         .catchError((e) {
       print(e);
-    });
+    }
+    );
+    
+    await _fireStore
+          .collection('ChatRoom')
+          .doc(roomid)
+          .update({
+      'lastMessage': message,
+      'users':users
+
+
+          });
+
+    messagesArenotSeen(roomid);
+
+
+
+
   }
 
 
-  sendddMessageOnline( String text) {
+  Future<void>sendddMessageOnline( String text)async  {
     messages = {
       "message": text,
       "sentBy": FirebaseAuth.instance.currentUser.email,
       "timestamp": DateTime.now().toString(),
+      'chattingWith':widget.token,
+      'messageFromToken':await _firebaseMessaging.getToken(),
     };
 
   }
 
+  Future<void> chatWith()async{
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.email).update({
+      'chattingWith':widget.token,
+
+    });
+
+  }
+
+Future<void> messagesSeen(roomid) async{
+  String sender;
+  int messagesArenotSeen;
+
+  await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
+      .then((value)  {
+    sender = value.data()['users'][1];
+  });
+
+  await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
+      .then((value)  {
+    messagesArenotSeen = value.data()['messagesArenotSeen'];
+  });
+
+  print('email sender: $sender');
+  print('current email: ${FirebaseAuth.instance.currentUser.email}');
+  print('messagesUnSeen: $messagesArenotSeen');
+
+  await _fireStore
+      .collection('ChatRoom')
+      .doc(roomid)
+      .update({'messagesArenotSeen': sender==FirebaseAuth.instance.currentUser.email?messagesArenotSeen:0});
+
+
+}
+
+Future<void> messagesArenotSeen (roomid)async {
+  String recevingMessagesEmail,chattingWithToken;
+
+          await _fireStore.collection('ChatRoom').doc(roomid).get()
+        .then((value)  {
+          recevingMessagesEmail = value.data()['users'][0];
+          });
+
+           await _fireStore.collection('users').doc(recevingMessagesEmail).get()
+           .then((value)  {
+             chattingWithToken = value.data()['chattingWith'];
+            });
+
+           print(recevingMessagesEmail);
+           print(chattingWithToken);
+           print(await _firebaseMessaging.getToken());
+
+
+        if (chattingWithToken != await _firebaseMessaging.getToken()){
+          print('working : $numberOFmessagesArenotSeen');
+          await _fireStore
+              .collection('ChatRoom')
+              .doc(roomid)
+              .update({'messagesArenotSeen': numberOFmessagesArenotSeen++});
+
+
+        }
+
+}
+
+Future<void> closeScreen()async{
+  await FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser.email).update({
+    'chattingWith':null,
+
+  });
+
+}
 
 
 
@@ -267,6 +380,7 @@ class MessagesStream extends StatelessWidget {
         .collection("chats")
         .orderBy("timestamp", descending: true)
         .snapshots();
+
   }
 
 }

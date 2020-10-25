@@ -1,208 +1,171 @@
+import 'package:chat/Component/search.dart';
 import 'package:chat/info_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/Search_bloc/search_bloc.dart';
+import 'chat_id.dart';
 import 'info_screen.dart';
-
 
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-
 class _SearchScreenState extends State<SearchScreen> {
-  String _search;
-  int firstLetter =0;
-  int secondLetter=1;
+  String _sendToEmail, _sendToMobileToken;
+  CreateChatId createChatId;
+  SearchBloc searchBloc;
 
-
-
+  @override
+  void initState() {
+    super.initState();
+    createChatId = CreateChatId();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white10,
-      body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
+      body: BlocProvider<SearchBloc>(
+        create: (context) => SearchBloc(),
+        child: SafeArea(
+          child: BlocListener<SearchBloc, SearchState>(
+            listener: (context, state) {
+              searchBloc = BlocProvider.of<SearchBloc>(context);
+              if (state is SwitchToChatListState) {
+                Navigator.pushNamed(context, 'chat_list');
+              } else if (state is SwitchToInfoState) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Info(
+                        email: _sendToEmail,
+                        roomId: createChatId.getChatID(
+                            FirebaseAuth.instance.currentUser.email,
+                            _sendToEmail),
+                        mobileToken: _sendToMobileToken,
+                      ),
+                    ));
+              }
+            },
+            child:
+                BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
+              searchBloc = BlocProvider.of<SearchBloc>(context);
 
-
-            child: ListView(
-              shrinkWrap: true,
-
-
-
-
-              children: <Widget>[
-
-
-
-                Row(
-
-
-
-                  children: <Widget>[
-
-
-
-
-
-
-
-
-                     Expanded(
-                       child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          ),
-                          height: 35.0,
-                          child: TextField(
-
-                            autofocus: true,
-                            style: TextStyle(color: Colors.white,),
-                            cursorColor: Colors.white,
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(child: SearchWidget(
                             onChanged: (value) {
-                              setState(() {
-                                _search = value;
-                              });
+                              searchBloc.add(ChangeUserEvent(search: value));
                             },
-                            decoration: InputDecoration(
-                              hintText: 'Search For Users',
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.black38,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                              contentPadding: EdgeInsets.symmetric(vertical: 1.0),
+                          )),
+                          FlatButton(
+                            onPressed: () {
+                              searchBloc.add(SwitchToChatListEvent());
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 15.0),
                             ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .where('User', isEqualTo: searchBloc.search)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasData) {
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    _sendToEmail = snapshot
+                                        .data.documents[index]
+                                        .data()['Email']
+                                        .toString();
+                                    _sendToMobileToken = snapshot
+                                        .data.documents[index]
+                                        .data()['mobileToken']
+                                        .toString();
+                                    return Column(
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black12,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20.0)),
+                                          ),
+                                          child: ListTile(
+                                            onTap: () {
+                                              searchBloc
+                                                  .add(SwitchToInfoEvent());
+                                            },
+                                            title: Text(
+                                              snapshot.data.documents[index]
+                                                  .data()['Name']
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            leading: CircleAvatar(
+                                              radius: 20.0,
+                                              backgroundColor:
+                                                  Colors.lightBlueAccent,
+                                              child: Text(
+                                                snapshot.data.documents[index]
+                                                    .data()['Name']
+                                                    .toString()[0]
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 25.0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5.0,
+                                        )
+                                      ],
+                                    );
+                                  },
+                                  itemCount: snapshot.data.documents.length,
+                                );
+                              } else {
+                                return Container();
+                              }
+                            },
                           ),
                         ),
-                     ),
-
-
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'chat_list');
-                      },
-                      child: Text('Cancel',style: TextStyle(color: Colors.white,fontSize: 15.0),),
-                    ),
-
-                  ],
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: StreamBuilder(
-                    
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .where('User',
-                            isEqualTo: _search)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasData) {
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-
-                            return  Column(
-                              children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black12,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20.0)),
-                              ),
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Info(
-                                      email: snapshot.data.documents[index]
-                                            .data()['Email']
-                                            .toString(),
-                                      roomId: getChatID(FirebaseAuth.instance.currentUser.email.toString(),snapshot.data.documents[index]
-                                          .data()['Email'].toString()
-                                          .toString() )
-                                        ),
-                                      ));
-                                },
-                                title: Text(
-                                  snapshot.data.documents[index]
-                                      .data()['Name']
-                                      .toString(),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                leading: CircleAvatar(
-                                  radius: 20.0,
-                                  backgroundColor: Colors.lightBlueAccent,
-                                  child: Text(
-                                    snapshot.data.documents[index]
-                                        .data()['Name']
-                                        .toString()[0]
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 25.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            )
-                              ],
-
-                            );
-                          },
-                          itemCount: snapshot.data.documents.length,
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-
+                      ),
+                    ]),
+              );
+            }),
           ),
-    ),
+        ),
+      ),
     );
   }
-
-  getChatID(String firstUser, String secondUser) {
-
-    if (firstUser.substring(firstLetter, secondLetter).codeUnitAt(0) > secondUser.substring(firstLetter, secondLetter).codeUnitAt(0)) {
-      return '$firstUser\_$secondUser';
-    } else if (firstUser.substring(firstLetter, secondLetter).codeUnitAt(0) == secondUser.substring(firstLetter, secondLetter).codeUnitAt(0)) {
-      firstLetter++;
-      secondLetter++;
-      getChatID(firstUser, secondUser);
-
-    }else{
-
-      return '$secondUser\_$firstUser';
-    }
-  }
-
-
-
-
-
-
 }

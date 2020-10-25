@@ -1,17 +1,17 @@
 import 'dart:io';
-
-import 'package:chat/chat_list.dart';
 import 'package:chat/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 class Info extends StatefulWidget  {
 
-  Info({this.email,this.roomId});
-   final String roomId, email;
+  Info({this.email,this.roomId,this.mobileToken,this.edit=false});
+   final String roomId, email,mobileToken;
+   final bool edit;
 
   @override
   _InfoState createState() => _InfoState();
@@ -23,7 +23,8 @@ class _InfoState extends State<Info > {
 
   File _image;
   final picker = ImagePicker();
-  String imageLink,name;
+  String imageLink,name,fullName,bio;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 
   @override
@@ -31,6 +32,7 @@ class _InfoState extends State<Info > {
     // TODO: implement initState
     super.initState();
     downloadImage();
+    getName();
     }
 
 
@@ -67,9 +69,8 @@ class _InfoState extends State<Info > {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.blueAccent,
-                   //   image: DecorationImage(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/chat-6b9bc.appspot.com/o/userImages%2Ftest1%40gmail.com.jpg?alt=media&token=a23d07c7-ea4b-4cba-acae-65e1751145f1'),fit: BoxFit.cover,),
                     ),
-                child: Container(
+                    child: Container(
                     height:110.0,
                   width: 100.0,
                   decoration: BoxDecoration(
@@ -119,6 +120,7 @@ class _InfoState extends State<Info > {
 
 
 
+
         ],
 
               ),
@@ -127,7 +129,7 @@ class _InfoState extends State<Info > {
 
               Container(
                   alignment: Alignment.center,
-                  child: Text( 'Hussein Basem',
+                  child: Text( fullName==null?'':fullName,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
 
@@ -139,7 +141,7 @@ class _InfoState extends State<Info > {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.center,
-                child: Text( 'UI/UX Designer at GTBank & Creative Director at PxDsgn Co. Creating simple digital products over. Let’s talk designs via\n email: sgnco@gmail.com',
+                child: Text( bio==null?'':bio,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -148,11 +150,11 @@ class _InfoState extends State<Info > {
               FlatButton(
                   onPressed: (){
                     startConversion(email:widget.email ,roomId:widget.roomId );
-                    Navigator.push(context,MaterialPageRoute(builder: ( context) =>ChatScreen(name: name,roomId: widget.roomId,image: imageLink,),
+                    Navigator.push(context,MaterialPageRoute(builder: ( context) =>ChatScreen(name: name,roomId: widget.roomId,image: imageLink,token: widget.mobileToken,email:widget.email),
 
-//                            (Route<dynamic> route) => false)
 
                     ), );
+
 
                   },
                   color: Colors.blueGrey,
@@ -175,7 +177,7 @@ class _InfoState extends State<Info > {
               SizedBox(height: 10.0,),
               FlatButton(
                 color: Colors.blueGrey,
-                onPressed: () { print(name); },
+                onPressed: ()async { String s = await _firebaseMessaging.getToken(); },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -207,20 +209,45 @@ class _InfoState extends State<Info > {
     );
   }
 
-  creatChatRoom(String roomId, chatRoomMap){
+  creatChatRoom(String roomId, chatRoomMap)async{
     
-    FirebaseFirestore.instance
+   await FirebaseFirestore.instance
         .collection('ChatRoom')
         .doc(roomId)
         .set(chatRoomMap)
         .catchError((onError){
           print(onError);
     });
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.email).update({
+      'chattingWith':widget.mobileToken
+
+    });
   }
 
-  startConversion({ String email,String roomId })  {
+  startConversion({ String email,String roomId }) async {
+    String lastMessage,sender;
+    int messagesArenotSeen;
+
 
     List<String> users = [email, FirebaseAuth.instance.currentUser.email];
+
+    await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).get()
+        .then((value)  {
+      lastMessage = value.data()['lastMessage'];
+    });
+
+    await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).get()
+        .then((value)  {
+      sender = value.data()['users'][1];
+    });
+
+    await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).get()
+        .then((value)  {
+      messagesArenotSeen = value.data()['messagesArenotSeen'];
+    });
 
 
     Map<String,dynamic> chatRoomMap = {
@@ -228,6 +255,8 @@ class _InfoState extends State<Info > {
       "users" : users,
       "chatRoomId" : roomId,
       "timeStamp" : DateTime.now().toString().toString(),
+      'lastMessage':lastMessage,
+      'messagesArenotSeen': sender==FirebaseAuth.instance.currentUser.email?messagesArenotSeen:0,
     };
 
     creatChatRoom(roomId,chatRoomMap);
@@ -264,18 +293,35 @@ class _InfoState extends State<Info > {
   }
 
 
-   void downloadImage()  {
-     FirebaseFirestore.instance.collection('users').where('Email',isEqualTo: widget.email).get()
+   Future<void> downloadImage() async {
+    await FirebaseFirestore.instance.collection('users').where('Email',isEqualTo: widget.email).get()
          .then((QuerySnapshot querySnapshot) => {
        querySnapshot.docs.forEach((doc) {
          setState(() {
-           imageLink =  doc.data()['userImage'];
+           imageLink =  doc.data()['userImage'].toString().isEmpty?null:doc.data()['userImage'];
            name = doc.data()['Name'];
 
          });
        })
      });
   }
+
+  Future<void>getName() async{
+
+    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser.email).get()
+        .then((value)
+    {
+      fullName = value.data()['Name'];
+      bio = value.data()['bio'];
+    }
+
+    );
+
+
+}
+
+
+
 
 
 
