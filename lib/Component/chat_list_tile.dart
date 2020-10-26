@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../chat_id.dart';
+import '../chat_screen.dart';
 
 class ChatsListTile extends StatelessWidget {
   ChatsListTile(
@@ -11,6 +15,7 @@ class ChatsListTile extends StatelessWidget {
   final String receiverEmail, lastMessage;
   final int messagesUnSeen;
   final bool showIcon;
+  CreateChatId createChatId = CreateChatId();
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,23 @@ class ChatsListTile extends StatelessWidget {
                                     color: Colors.white, fontSize: 20.0),
                               ),
                             ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen(
+                                    name: snapshot.data.docs[index]
+                                        .data()['Name'],
+                                    roomId: createChatId.getChatID(
+                                        FirebaseAuth.instance.currentUser.email,
+                                        snapshot.data.docs[index]
+                                            .data()['Email']),
+                                    image: imageLink,
+                                    token: snapshot.data.docs[index]
+                                        .data()['mobileToken'],
+                                    email: snapshot.data.docs[index]
+                                        .data()['Email'])));
+                      },
                     ),
                   ),
                   Divider(

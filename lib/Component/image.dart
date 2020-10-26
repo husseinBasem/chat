@@ -4,10 +4,15 @@ import 'package:flutter/material.dart';
 class ImageWidget extends StatelessWidget {
   const ImageWidget({
     Key key,
-    @required this.editBloc,
+    this.onPressed,
+    this.networkImage,
+    this.changePhoto = true,
+
   }) : super(key: key);
 
-  final EditBloc editBloc;
+  final Function onPressed;
+  final String networkImage;
+  final bool changePhoto;
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +34,23 @@ class ImageWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.blueAccent,
                 image: DecorationImage(
-                    image: NetworkImage(editBloc.imageLink),
+                    image: NetworkImage(networkImage),
                     fit: BoxFit.cover)),
           ),
         ),
-        MaterialButton(
-          onPressed: () {
-            editBloc.add(GetImageEvent());
-          },
-          color: Colors.blueAccent,
-          height: 25.0,
-          child: Icon(
-            Icons.add,
-            size: 25.0,
-            color: Colors.white,
-          ),
-          shape: CircleBorder(side: BorderSide(color: Colors.white)),
+
+        Container(
+          child:changePhoto == true? MaterialButton(
+            onPressed: onPressed,
+            color: Colors.blueAccent,
+            height: 25.0,
+            child: Icon(
+              Icons.add,
+              size: 25.0,
+              color: Colors.white,
+            ),
+            shape: CircleBorder(side: BorderSide(color: Colors.white)),
+          ):null
         ),
       ],
     );

@@ -59,7 +59,6 @@ class LoginState extends LoginStates {
 
 class SwitchToRegisterState extends LoginStates{
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 

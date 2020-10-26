@@ -7,7 +7,7 @@ import 'Screens/chat_list.dart';
 import 'chat_screen.dart';
 import 'Screens/login_screen.dart';
 import 'Screens/edit_screen.dart';
-import 'search_screen.dart';
+import 'Screens/search_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -38,21 +38,21 @@ class _ChatScreenState extends State<ChatScreen>{
   final _auth = FirebaseAuth.instance;
   String message;
   int numberOFmessagesArenotSeen=1;
+  bool block;
 
 
 
   @override
   void initState()  {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
-    messagesSeen(widget.roomId);
+  //  messagesSeen(widget.roomId);
     chatWith();
+    getBlockValue(widget.roomId);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
      closeScreen();
 
@@ -75,7 +75,6 @@ class _ChatScreenState extends State<ChatScreen>{
 
   @override
   Widget build(BuildContext context,) {
-    // TODO: implement build
 
     return Scaffold(
       
@@ -136,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen>{
                   children: <Widget>[
                    Padding(
                      padding:  EdgeInsets.only(bottom: 10.0),
-                     child: MessagesStream(widget.roomId),
+                     child:block ==true?null: MessagesStream(widget.roomId),
                    ),
 
 
@@ -145,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen>{
                     Container(
 
                       decoration:kMessageContainerDecoration,
-                      child: Row(
+                      child:block==false? Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
 
@@ -155,7 +154,6 @@ class _ChatScreenState extends State<ChatScreen>{
 
                               onChanged: (value) {
                                 message = value;
-                                sendddMessageOnline(message);
                                 print(messageTextController.text);
 
                               },
@@ -165,17 +163,28 @@ class _ChatScreenState extends State<ChatScreen>{
                             ),
                           ),
                           FlatButton(onPressed: () async{
+                            messagePlayLoad(message);
                             messageTextController.clear();
 
                             addConversationMessages(widget.roomId,message,messages);
 
-//                      _fireStore.collection('text').add({
-//                        'sender': loggedInUser.email,
-//                        'message': message,
-//                      });
+
 
                           }, child: Text('Send',style: kSendButtonTextStyle,),),
                         ],
+                      ):
+                      Container(
+                        padding: EdgeInsets.only(bottom: 5.0),
+                        color: Colors.red,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+
+                            Text('You Got Blocked From ${widget.name}',style: TextStyle(height: 2.0,fontSize: 17.0,color: Colors.white),textAlign: TextAlign.center,),
+
+                          ],
+                        ),
                       ),
                     ),
 
@@ -232,7 +241,7 @@ class _ChatScreenState extends State<ChatScreen>{
   }
 
 
-  Future<void>sendddMessageOnline( String text)async  {
+  Future<void>messagePlayLoad( String text)async  {
     messages = {
       "message": text,
       "sentBy": FirebaseAuth.instance.currentUser.email,
@@ -253,31 +262,35 @@ class _ChatScreenState extends State<ChatScreen>{
 
   }
 
-Future<void> messagesSeen(roomid) async{
-  String sender;
-  int messagesArenotSeen;
-
-  await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
+  Future<void> getBlockValue(String roomid)async{
+      await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
       .then((value)  {
-    sender = value.data()['users'][1];
+        block = value.data()[widget.email.replaceAll('.', '_')];
+
+
   });
+  }
 
-  await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
-      .then((value)  {
-    messagesArenotSeen = value.data()['messagesArenotSeen'];
-  });
-
-  print('email sender: $sender');
-  print('current email: ${FirebaseAuth.instance.currentUser.email}');
-  print('messagesUnSeen: $messagesArenotSeen');
-
-  await _fireStore
-      .collection('ChatRoom')
-      .doc(roomid)
-      .update({'messagesArenotSeen': sender==FirebaseAuth.instance.currentUser.email?messagesArenotSeen:0});
-
-
-}
+//Future<void> messagesSeen(roomid) async{
+//  String sender;
+//  int messagesArenotSeen;
+//
+//  await FirebaseFirestore.instance.collection('ChatRoom').doc(roomid).get()
+//      .then((value)  {
+//    sender = value.data()['users'][1];
+//    messagesArenotSeen = value.data()['messagesArenotSeen'];
+//
+//  });
+//
+//
+//
+//  await _fireStore
+//      .collection('ChatRoom')
+//      .doc(roomid)
+//      .update({'messagesArenotSeen': sender==FirebaseAuth.instance.currentUser.email?messagesArenotSeen:0});
+//
+//
+//}
 
 Future<void> messagesArenotSeen (roomid)async {
   String recevingMessagesEmail,chattingWithToken;
@@ -333,9 +346,7 @@ class MessagesStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return  StreamBuilder(
         stream: getConversationMessages(roomId),
-//        _fireStore.collection("ChatRoom")
-//            .doc(roomId)
-//            .collection("chats").snapshots(),
+
         builder:(context,snapshot){
           if (!snapshot.hasData){
             return Center(

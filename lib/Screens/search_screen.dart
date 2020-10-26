@@ -1,13 +1,14 @@
 import 'package:chat/Component/search.dart';
-import 'package:chat/info_screen.dart';
+import 'package:chat/Screens/info_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/Search_bloc/search_bloc.dart';
-import 'chat_id.dart';
+import '../bloc/Search_bloc/search_bloc.dart';
+import '../chat_id.dart';
 import 'info_screen.dart';
+import '../notifications.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -15,14 +16,18 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  String _sendToEmail, _sendToMobileToken;
+  String _sendToEmail;
   CreateChatId createChatId;
   SearchBloc searchBloc;
+  Notifications notifications;
 
   @override
   void initState() {
     super.initState();
     createChatId = CreateChatId();
+    notifications = Notifications();
+    notifications.registerNotification();
+    notifications.configLocalNotification();
   }
 
   @override
@@ -46,7 +51,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         roomId: createChatId.getChatID(
                             FirebaseAuth.instance.currentUser.email,
                             _sendToEmail),
-                        mobileToken: _sendToMobileToken,
                       ),
                     ));
               }
@@ -63,10 +67,12 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Expanded(child: SearchWidget(
+                          Expanded(
+                              child: SearchWidget(
                             onChanged: (value) {
                               searchBloc.add(ChangeUserEvent(search: value));
                             },
+                            autofocus: true,
                           )),
                           FlatButton(
                             onPressed: () {
@@ -105,10 +111,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         .data.documents[index]
                                         .data()['Email']
                                         .toString();
-                                    _sendToMobileToken = snapshot
-                                        .data.documents[index]
-                                        .data()['mobileToken']
-                                        .toString();
+
                                     return Column(
                                       children: <Widget>[
                                         Container(
@@ -130,19 +133,40 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   color: Colors.white),
                                             ),
                                             leading: CircleAvatar(
-                                              radius: 20.0,
-                                              backgroundColor:
-                                                  Colors.lightBlueAccent,
-                                              child: Text(
-                                                snapshot.data.documents[index]
-                                                    .data()['Name']
-                                                    .toString()[0]
-                                                    .toUpperCase(),
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 25.0),
-                                              ),
-                                            ),
+                                                radius: 20.0,
+                                                backgroundColor:
+                                                    Colors.lightBlueAccent,
+                                                child:
+                                                    snapshot
+                                                                    .data
+                                                                    .documents[
+                                                                        index]
+                                                                    .data()[
+                                                                'userImage'] ==
+                                                            null
+                                                        ? Text(
+                                                            snapshot
+                                                                .data
+                                                                .documents[
+                                                                    index]
+                                                                .data()['Name']
+                                                                .toString()[0]
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 25.0),
+                                                          )
+                                                        : CircleAvatar(
+                                                            radius: 20.0,
+                                                            backgroundImage:
+                                                                NetworkImage(snapshot
+                                                                        .data
+                                                                        .documents[
+                                                                            index]
+                                                                        .data()[
+                                                                    'userImage']),
+                                                          )),
                                           ),
                                         ),
                                         SizedBox(

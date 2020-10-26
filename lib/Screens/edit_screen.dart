@@ -120,7 +120,8 @@ class _EditState extends State<Edit> {
                                     snapshot.data.data()['userImage'];
 
                                 return Column(children: <Widget>[
-                                  ImageWidget(editBloc: editBloc),
+                                  ImageWidget(networkImage: editBloc.imageLink,onPressed:() {editBloc.add(GetImageEvent());}
+                                    ,),
                                   SizedBox(
                                     height: 40.0,
                                   ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SearchWidget extends StatelessWidget {
-  const SearchWidget({this.onTap,this.onChanged,
+  const SearchWidget({this.onTap,this.onChanged,this.autofocus,
     Key key,
 
   }) : super(key: key);
 
   final Function onTap,onChanged;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class SearchWidget extends StatelessWidget {
       ),
       height: 35.0,
       child: TextField(
-        autofocus: false,
+        autofocus: autofocus,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search For Users',

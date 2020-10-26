@@ -67,7 +67,7 @@ class _ChatListState extends State<ChatList> {
                           SizedBox(
                             height: 10.0,
                           ),
-                          SearchWidget(onTap: (){bloc.add(SwitchToSearchEvent());},),
+                          SearchWidget(onTap: (){bloc.add(SwitchToSearchEvent());},autofocus: false,),
                           SizedBox(
                             height: 10.0,
                           ),

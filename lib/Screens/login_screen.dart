@@ -16,12 +16,10 @@ class _LoginScreenState extends State<LoginScreen>
   LoginBloc bloc;
 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     bloc.close();
   }
