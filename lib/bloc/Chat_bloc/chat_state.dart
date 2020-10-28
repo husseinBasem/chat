@@ -9,29 +9,32 @@ class ChatInitial extends ChatState {
   List<Object> get props => [];
 }
 
-class ChatWithState extends ChatState{
+class ChatWithState extends ChatState {
   @override
   List<Object> get props => [];
 }
 
-class ChatInitialState extends ChatState{
+class GetValueState extends ChatState {
   @override
   List<Object> get props => [];
 }
 
-class CloseScreenState extends ChatState{
+class MessagePlayLoadState extends ChatState {
   @override
   List<Object> get props => [];
 }
 
-class MessagePlayLoadState extends ChatState{
-
+class AddConversationMessageState extends ChatState {
   @override
   List<Object> get props => [];
 }
 
-class AddConversationMessageState extends ChatState{
+class InitialState extends ChatState {
+  @override
+  List<Object> get props => [];
+}
 
+class BlockState extends ChatState {
   @override
   List<Object> get props => [];
 }

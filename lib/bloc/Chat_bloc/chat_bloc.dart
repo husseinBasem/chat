@@ -10,93 +10,113 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  ChatBloc() : super(ChatInitialState());
+  ChatBloc() : super(InitialState());
 
-  bool block=false;
+  bool block = false;
   int numberOFMessagesAreNotSeen;
 
   Map<String, String> messages = {};
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final _fireStore = FirebaseFirestore.instance;
 
-
-
-
   @override
   Stream<ChatState> mapEventToState(
     ChatEvent event,
   ) async* {
-    if (event is ChatWithEvent){
-      chatWith(token:event.token);
+    if (event is ChatWithEvent) {
+      chatWith(token: event.token);
       yield ChatWithState();
-    }
-    else if (event is ChatInitialEvent){
-      getBlockValue(email:event.email ,roomId:event.roomId );
-      yield ChatInitialState();
-    }
 
-    else if (event is CloseScreenEvent){
-      closeScreen();
-      yield CloseScreenState();
-    }
-    else if (event is MessagePlayLoadEvent){
-      messagePlayLoad(text: event.message,token: event.token);
+    } else if (event is GetValueEvent) {
+      await getNumberUnSeenMessageValue(
+          email: event.email, roomId: event.roomId);
+
+      yield GetValueState();
+
+    } else if (event is MessagePlayLoadEvent) {
+      messagePlayLoad(text: event.message, token: event.token);
       yield MessagePlayLoadState();
-    }
-    else if (event is AddConversationMessageEvent){
-      addConversationMessages(email: event.email,message: event.message,roomId: event.roomId,messageMap: messages);
+
+    } else if (event is AddConversationMessageEvent) {
+      await addConversationMessages(
+          email: event.email,
+          message: event.message,
+          roomId: event.roomId,
+          messageMap: messages);
       yield AddConversationMessageState();
+
+    } else if (event is BlockEvent) {
+      print('work here');
+      await getBlockValue(email: event.email, roomId: event.roomId);
+      yield BlockState();
     }
+
   }
 
-
-  Future<void> chatWith({String token})async{
+  Future<void> chatWith({String token}) async {
     await _fireStore
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.email).update({
-      'chattingWith':token,
-
-    });
-
-  }
-
-  Future<void> getBlockValue({String roomId,email})async{
-    await _fireStore.collection('ChatRoom').doc(roomId).get()
-        .then((value)  {
-
-      numberOFMessagesAreNotSeen= value.data()['messagesArenotSeen'];
-      block = value.data()[email.replaceAll('.', '_')];
-
-
+        .doc(FirebaseAuth.instance.currentUser.email)
+        .update({
+      'chattingWith': token,
     });
   }
 
-  Future<void> closeScreen()async{
+  Future<void> getBlockValue({String roomId, email}) async {
+    await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
+      if (value != null) block = value.data()[email.replaceAll('.', '_')];
+    });
+  }
+
+  Future<void> getNumberUnSeenMessageValue({String roomId, email}) async {
+    await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
+      numberOFMessagesAreNotSeen = value.data()['messagesArenotSeen'];
+    });
+  }
+
+  Future<void> closeScreen() async {
     await _fireStore
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.email).update({
-      'chattingWith':null,
-
+        .doc(FirebaseAuth.instance.currentUser.email)
+        .update({
+      'chattingWith': null,
     });
-
   }
 
-  Future<void>messagePlayLoad({String text,token})async  {
+  Future<void> messagePlayLoad({String text, token}) async {
     messages = {
       "message": text,
       "sentBy": FirebaseAuth.instance.currentUser.email,
       "timestamp": DateTime.now().toString(),
-      'chattingWith':token,
-      'messageFromToken':await _firebaseMessaging.getToken(),
+      'chattingWith': token,
+      'messageFromToken': await _firebaseMessaging.getToken(),
     };
-
   }
 
-
   Future<void> addConversationMessages(
-  {String roomId,message,email, Map<String, String> messageMap}) async {
+      {String roomId, message, email, Map<String, String> messageMap}) async {
+    List<String> users = [email, FirebaseAuth.instance.currentUser.email];
 
-    List<String> users = [email,  FirebaseAuth.instance.currentUser.email];
+    String receivingMessagesEmail, chattingWithToken;
+
+    await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
+      receivingMessagesEmail = value.data()['users'][0];
+    });
+
+    await _fireStore
+        .collection('users')
+        .doc(receivingMessagesEmail)
+        .get()
+        .then((value) {
+      chattingWithToken = value.data()['chattingWith'];
+    });
+
+    if (chattingWithToken != await _firebaseMessaging.getToken()) {
+      await _fireStore
+          .collection('ChatRoom')
+          .doc(roomId)
+          .update({'messagesArenotSeen': ++numberOFMessagesAreNotSeen});
+    }
 
     await _fireStore
         .collection("ChatRoom")
@@ -105,56 +125,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         .add(messageMap)
         .catchError((e) {
       print(e);
-    }
-    );
+    });
 
     await _fireStore
         .collection('ChatRoom')
         .doc(roomId)
-        .update({
-      'lastMessage': message,
-      'users':users
-
-
-    });
-
-    String receivingMessagesEmail,chattingWithToken;
-
-    await _fireStore.collection('ChatRoom').doc(roomId).get()
-        .then((value)  {
-      receivingMessagesEmail = value.data()['users'][0];
-    });
-
-    await _fireStore.collection('users').doc(receivingMessagesEmail).get()
-        .then((value)  {
-      chattingWithToken = value.data()['chattingWith'];
-    });
-
-    print(receivingMessagesEmail);
-    print(chattingWithToken);
-    print(await _firebaseMessaging.getToken());
-
-
-    if (chattingWithToken != await _firebaseMessaging.getToken()){
-      print('working : $numberOFMessagesAreNotSeen');
-      await _fireStore
-          .collection('ChatRoom')
-          .doc(roomId)
-          .update({'messagesArenotSeen': numberOFMessagesAreNotSeen++});
-
-
-    }
-
-
-
-
-
-
-
+        .update({'lastMessage': message, 'users': users});
   }
-
-
-
-
-
 }

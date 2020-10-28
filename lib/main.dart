@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/chat_list.dart';
-import 'chat_screen.dart';
+import 'Screens/chat_screen.dart';
 import 'Screens/login_screen.dart';
 import 'Screens/edit_screen.dart';
 import 'Screens/search_screen.dart';

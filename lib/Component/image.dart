@@ -7,12 +7,16 @@ class ImageWidget extends StatelessWidget {
     this.onPressed,
     this.networkImage,
     this.changePhoto = true,
+    this.height,
+    this.width,
 
   }) : super(key: key);
 
   final Function onPressed;
   final String networkImage;
   final bool changePhoto;
+  final double height,width;
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +25,8 @@ class ImageWidget extends StatelessWidget {
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
         Container(
-          height: 110.0,
-          width: 100.0,
+          height: height,  //110.0
+          width: width,    //100
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100),
             color: Colors.blueAccent,

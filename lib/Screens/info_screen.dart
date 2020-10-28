@@ -1,6 +1,6 @@
 import 'package:chat/Component/image.dart';
 import 'package:chat/bloc/Info_bloc/info_bloc.dart';
-import 'package:chat/chat_screen.dart';
+import 'package:chat/Screens/chat_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -97,6 +97,8 @@ class _InfoState extends State<Info> {
                               ImageWidget(
                                 networkImage: snapshot.data.data()['userImage'],
                                 changePhoto: false,
+                                width: 100.0,
+                                height: 110.0,
                               ),
                               SizedBox(
                                 height: 20.0,

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../chat_id.dart';
-import '../chat_screen.dart';
+import '../Screens/chat_screen.dart';
 
 class ChatsListTile extends StatelessWidget {
   ChatsListTile(
