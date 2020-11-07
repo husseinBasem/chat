@@ -43,8 +43,4 @@ class LoginEvent extends LoginEvents {
   List<Object> get props => [email,password];
 }
 
-class SwitchToRegisterEvent extends LoginEvents{
-  @override
-  List<Object> get props => [];
-}
 

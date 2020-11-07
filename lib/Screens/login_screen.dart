@@ -1,9 +1,14 @@
+import 'package:chat/Transition/fade_transition.dart';
+import 'package:chat/Transition/slide_right_route.dart';
+import 'package:chat/Screens/registration_screen.dart';
 import 'package:chat/bloc/Login_bloc/login_bloc.dart';
 import 'package:chat/constans.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/Component/rounded_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'chat_list.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,9 +20,7 @@ class _LoginScreenState extends State<LoginScreen>
   String _email, _password;
   LoginBloc bloc;
 @override
-  void initState() {
-    super.initState();
-  }
+
   @override
   void dispose() {
     super.dispose();
@@ -37,18 +40,10 @@ class _LoginScreenState extends State<LoginScreen>
           child: BlocListener<LoginBloc, LoginStates>(
             cubit:bloc ,
             listener: (context, state) {
-              bloc = BlocProvider.of<LoginBloc>(context);
-
-
-
               if (state is LoggedInState) {
-                Navigator.pushNamed(context, 'chat_list');
+                Navigator.pushAndRemoveUntil(context, FadeRoute(page: ChatList()),(Route<dynamic> route) => false);
               }
 
-              if (state is SwitchToRegisterState) {
-                Navigator.pushNamed(
-                    context, 'registration_screen');
-              }
             },
             child: BlocBuilder<LoginBloc, LoginStates>(
                 cubit: bloc,
@@ -75,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 tag: 'logo',
                                 child: Container(
                                   height: 200.0,
-                                  child: Image.asset('images/logo.png'),
+                                  child: Image.asset('images/1721.png'),
                                 ),
                               ),
                             ),
@@ -124,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             FlatButton(
                               onPressed: () {
-                                bloc.add(SwitchToRegisterEvent());
+                                Navigator.push(context, SlideRightRoute(page: RegistrationScreen(),dx: 1.0,dy: 0.0));
 
                               },
                               child: Text('Switch to Register'),
@@ -141,10 +136,12 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  void login() {
+  void login()  {
     bloc.add(SpinnerOnEvent());
     bloc.add(LoginEvent(email: _email, password: _password));
     bloc.add(SpinnerOffEvent());
     bloc.add(LoggedInEvent());
+
+
   }
 }

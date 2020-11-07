@@ -12,12 +12,6 @@ class ChangeUserEvent extends SearchEvent {
   List<Object> get props => [this.search];
 }
 
-class SwitchToChatListEvent extends SearchEvent {
-  @override
-  List<Object> get props => [];
-}
 
-class SwitchToInfoEvent extends SearchEvent {
-  @override
-  List<Object> get props => [];
-}
+
+

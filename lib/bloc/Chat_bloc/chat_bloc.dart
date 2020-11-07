@@ -46,7 +46,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield AddConversationMessageState();
 
     } else if (event is BlockEvent) {
-      print('work here');
       await getBlockValue(email: event.email, roomId: event.roomId);
       yield BlockState();
     }
@@ -116,6 +115,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           .collection('ChatRoom')
           .doc(roomId)
           .update({'messagesArenotSeen': ++numberOFMessagesAreNotSeen});
+    }else {
+      await _fireStore
+          .collection('ChatRoom')
+          .doc(roomId)
+          .update({'messagesArenotSeen': 0});
+
     }
 
     await _fireStore

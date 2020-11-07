@@ -4,10 +4,7 @@ abstract class EditEvent extends Equatable {
   const EditEvent();
 }
 
-class SwitchToChatListEvent extends EditEvent {
-  @override
-  List<Object> get props => [];
-}
+
 
 class UpdateUserImageEvent extends EditEvent {
   @override
@@ -76,7 +73,3 @@ class SecondCheckUserEvent extends EditEvent {
   List<Object> get props => [];
 }
 
-class SwitchToLoginEvent extends EditEvent {
-  @override
-  List<Object> get props => [];
-}

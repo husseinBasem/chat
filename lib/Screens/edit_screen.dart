@@ -1,3 +1,4 @@
+import 'package:chat/Transition/slide_right_route.dart';
 import 'package:chat/bloc/Edit_bloc/edit_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +9,7 @@ import '../Component/bio.dart';
 import '../Component/image.dart';
 import '../Component/name.dart';
 import '../Component/user_name.dart';
-import '../notifications.dart';
+import 'login_screen.dart';
 
 class Edit extends StatefulWidget {
   @override
@@ -17,8 +18,7 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   EditBloc editBloc;
-  String userName;
-  Notifications notifications;
+  String _userName;
 
 
   @override
@@ -27,9 +27,7 @@ class _EditState extends State<Edit> {
     super.initState();
     editBloc.add(DownloadImageEvent());
     editBloc.add(GetNameEvent());
-    notifications = Notifications();
-    notifications.registerNotification();
-    notifications.configLocalNotification();
+
   }
 
   @override
@@ -45,153 +43,147 @@ class _EditState extends State<Edit> {
       body: BlocProvider<EditBloc>(
         create: (context) => EditBloc(),
         child: SafeArea(
-          child: BlocListener<EditBloc, EditState>(
-            listener: (context, state) {
-              editBloc = BlocProvider.of<EditBloc>(context);
-              if (state is SwitchToChatListState) {
-                Navigator.pushNamed(context, 'chat_list');
-              } else if (state is SwitchToLoginState) {
-                Navigator.pushNamed(context, 'login_screen');
-              }
-            },
-            child: BlocBuilder<EditBloc, EditState>(builder: (context, state) {
-              editBloc = BlocProvider.of<EditBloc>(context);
-
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.0),
-                child: Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            ButtonTheme(
-                              padding: EdgeInsets.only(right: 30.0),
-                              child: FlatButton(
-                                onPressed: () {
-                                  editBloc.add(SwitchToChatListEvent());
-                                },
-                                child: Text(
-                                  'cancel',
-                                  style: TextStyle(fontSize: 17),
-                                ),
+          child: BlocBuilder<EditBloc, EditState>(builder: (context, state) {
+            editBloc = BlocProvider.of<EditBloc>(context);
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              child: Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          ButtonTheme(
+                            padding: EdgeInsets.only(right: 30.0),
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'cancel',
+                                style: TextStyle(fontSize: 17),
                               ),
                             ),
-                            ButtonTheme(
-                              padding: EdgeInsets.only(left: 50.0),
-                              child: FlatButton(
-                                onPressed: () {
-                                  if (editBloc.userName != null) {
-                                    if (editBloc.userNameError == null) {
-                                      editBloc.add(UpdateUserImageEvent());
-                                      editBloc.add(UpdateUserDetailEvent());
-                                      editBloc.add(SwitchToChatListEvent());
-                                    }
+                          ),
+                          ButtonTheme(
+                            padding: EdgeInsets.only(left: 50.0),
+                            child: FlatButton(
+                              onPressed: () {
+                                if (editBloc.userName != null) {
+                                  if (editBloc.userNameError == null) {
+                                    editBloc.add(UpdateUserDetailEvent());
+                                    Navigator.of(context).pop();
                                   }
-                                },
-                                child: Text(
-                                  'done',
-                                  style: TextStyle(fontSize: 17),
-                                ),
+                                }
+                              },
+                              child: Text(
+                                'done',
+                                style: TextStyle(fontSize: 17),
                               ),
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 60.0,
-                        ),
-                        FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(FirebaseAuth.instance.currentUser.email)
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                if (editBloc.fullName == null)
-                                  editBloc.fullName =
-                                      snapshot.data.data()['Name'];
-                                if (editBloc.bio == null)
-                                  editBloc.bio = snapshot.data.data()['bio'];
-                                userName = snapshot.data.data()['User'];
-                                editBloc.imageLink =
-                                    snapshot.data.data()['userImage'];
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 60.0,
+                      ),
+                      FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(FirebaseAuth.instance.currentUser.email)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              if (editBloc.fullName == null)
+                                editBloc.fullName =
+                                    snapshot.data.data()['Name'];
+                              if (editBloc.bio == null)
+                                editBloc.bio = snapshot.data.data()['bio'];
+                              _userName = snapshot.data.data()['User'];
+                              editBloc.imageLink =
+                                  snapshot.data.data()['userImage'];
 
-                                return Column(children: <Widget>[
-                                  ImageWidget(networkImage: editBloc.imageLink,onPressed:() {editBloc.add(GetImageEvent());},height: 110.0,width: 100.0
-                                    ,),
-                                  SizedBox(
-                                    height: 40.0,
+                              return Column(children: <Widget>[
+                                ImageWidget(
+                                  networkImage: editBloc.imageLink,
+                                  onPressed:() {editBloc.add(GetImageEvent());},
+                                  height: 110.0,
+                                  width: 100.0,
+                                    firstLetter: editBloc.fullName[0],
                                   ),
-                                  Divider(
-                                    color: Colors.black,
-                                    thickness: 2.0,
-                                    height: 1.0,
-                                  ),
-                                  NameWidget(editBloc: editBloc),
-                                  Divider(
-                                    color: Colors.black,
-                                    thickness: 2.0,
-                                    height: 1.0,
-                                    indent: 10.0,
-                                  ),
-                                  UserNameWidget(
-                                      editBloc: editBloc, userName: userName),
-                                  SizedBox(
-                                    height: 5.0,
-                                  ),
-                                  Divider(
-                                    color: Colors.black,
-                                    thickness: 2.0,
-                                    height: 1.0,
-                                    indent: 10.0,
-                                  ),
-                                  BioWidget(editBloc: editBloc),
-                                ]);
-                              } else {
-                                return Container();
-                              }
-                            }),
-                        Divider(
-                          color: Colors.black,
-                          thickness: 2.0,
-                          height: 1.0,
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        FlatButton(
-                            onPressed: () {
-                              editBloc.add(SignOutEvent());
-                              editBloc.add(SwitchToLoginEvent());
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.chat_bubble,
-                                  size: 20.0,
-                                  color: Colors.redAccent,
-                                ),
                                 SizedBox(
-                                  width: 10.0,
+                                  height: 40.0,
                                 ),
-                                Text(
-                                  'Sign Out',
-                                  style: TextStyle(
-                                      color: Colors.redAccent, fontSize: 16.0),
-                                )
-                              ],
-                            )),
-                      ],
-                    ),
+                                Divider(
+                                  color: Colors.black,
+                                  thickness: 2.0,
+                                  height: 1.0,
+                                ),
+                                NameWidget(editBloc: editBloc),
+                                Divider(
+                                  color: Colors.black,
+                                  thickness: 2.0,
+                                  height: 1.0,
+                                  indent: 10.0,
+                                ),
+                                UserNameWidget(
+                                    editBloc: editBloc, userName: _userName),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Divider(
+                                  color: Colors.black,
+                                  thickness: 2.0,
+                                  height: 1.0,
+                                  indent: 10.0,
+                                ),
+                                BioWidget(editBloc: editBloc),
+                              ]);
+                            } else {
+                              return Container();
+                            }
+                          }),
+                      Divider(
+                        color: Colors.black,
+                        thickness: 2.0,
+                        height: 1.0,
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            editBloc.add(SignOutEvent());
+                            Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: LoginScreen(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false);
+
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.chat_bubble,
+                                size: 20.0,
+                                color: Colors.redAccent,
+                              ),
+                              SizedBox(
+                                width: 10.0,
+                              ),
+                              Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                    color: Colors.redAccent, fontSize: 16.0),
+                              )
+                            ],
+                          )),
+                    ],
                   ),
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );

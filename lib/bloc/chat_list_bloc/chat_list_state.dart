@@ -9,12 +9,10 @@ class ChatListInitial extends ChatListState {
   List<Object> get props => [];
 }
 
-class SwitchToEditState extends ChatListState {
-  @override
-  List<Object> get props => [];
-}
 
-class SwitchToSearchState extends ChatListState {
+
+
+class SwitchToChatScreenState extends ChatListState {
   @override
   List<Object> get props => [];
 }

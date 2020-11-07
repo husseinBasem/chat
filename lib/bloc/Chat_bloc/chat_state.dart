@@ -38,3 +38,5 @@ class BlockState extends ChatState {
   @override
   List<Object> get props => [];
 }
+
+

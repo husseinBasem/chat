@@ -36,33 +36,29 @@ if (event is CheckUserEvent) {
 }
 
 if (event is SecondCheckUserEvent) {
-
     yield CheckUserState(error: userName = null);
-
 }
 
-   if(event is AddUserEvent){
+   else if(event is AddUserEvent){
 
        await registerUser(event.email,event.password,event.userName,event.name);
       yield AddUserState();
 
     }
 
-   if (event is ChangeInputEmailEvent){
+   else if (event is ChangeInputEmailEvent){
      yield ChangeInputEmailState(email: email=null);
    }
 
-    if (event is ChangeInputPasswordEvent){
+    else if (event is ChangeInputPasswordEvent){
       yield ChangeInputPasswordState(password: password = null);
     }
 
-    if (event is RegisteredEvent && userName == null && email == null && password ==null && somethingWrong == false){
+    else if (event is RegisteredEvent && userName == null && email == null && password ==null && somethingWrong == false){
       yield RegisteredState();
     }
 
-    if (event is SwitchToLoginEvent){
-      yield SwitchToLoginState();
-    }
+
 
 
 

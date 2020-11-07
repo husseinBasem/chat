@@ -4,12 +4,12 @@ abstract class ChatListEvent extends Equatable {
   const ChatListEvent();
 }
 
-class SwitchToEditEvent extends ChatListEvent {
-  @override
-  List<Object> get props => [];
-}
 
-class SwitchToSearchEvent extends ChatListEvent {
+
+
+class SwitchToChatScreenEvent extends ChatListEvent {
+  final String email,mobileToken,roomId;
+  SwitchToChatScreenEvent({this.email,this.roomId,this.mobileToken});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [this.roomId,this.mobileToken,this.email];
 }

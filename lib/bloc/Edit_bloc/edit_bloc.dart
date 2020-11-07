@@ -22,22 +22,25 @@ class EditBloc extends Bloc<EditEvent, EditState> {
   Stream<EditState> mapEventToState(
     EditEvent event,
   ) async* {
-    if (event is SwitchToChatListEvent) {
-      yield SwitchToChatListState();
-    } else if (event is DownloadImageEvent) {
+     if (event is DownloadImageEvent) {
       downloadImage();
       yield DownloadImageState();
     } else if (event is GetNameEvent) {
       getName();
       yield GetNameState();
     } else if (event is UpdateUserImageEvent) {
-      updateUserImage();
+      await downloadImage();
+
       yield UpdateUserImageState();
     } else if (event is UpdateUserDetailEvent) {
       updateUserDetail();
       yield UpdateUserDetailState();
     } else if (event is GetImageEvent) {
-      getImage();
+      await getImage();
+      await updateUserImage();
+      await downloadImage();
+
+
       yield GetImageState();
     } else if (event is SignOutEvent) {
       signOut();
@@ -56,8 +59,6 @@ class EditBloc extends Bloc<EditEvent, EditState> {
       }
     } else if (event is SecondCheckUserEvent) {
       yield CheckUserState(error: userNameError = null);
-    } else if (event is SwitchToLoginEvent) {
-      yield SwitchToLoginState();
     }
   }
 
@@ -73,11 +74,10 @@ class EditBloc extends Bloc<EditEvent, EditState> {
       FirebaseAuth.instance.currentUser.updateProfile(photoURL: imageUrl);
       await FirebaseFirestore.instance
           .collection("users")
-          .doc(FirebaseAuth.instance.currentUser.uid)
+          .doc(FirebaseAuth.instance.currentUser.email)
           .update(
         {"userImage": imageUrl},
       ).catchError((onError) {
-        print(onError);
       });
     }
   }
@@ -94,14 +94,13 @@ class EditBloc extends Bloc<EditEvent, EditState> {
   }
 
   Future<void> getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
     if (pickedFile != null) {
       _image = File(pickedFile.path);
     }
   }
 
   Future<void> downloadImage() async {
-    print('Downlo image event is working');
     await FirebaseFirestore.instance
         .collection('users')
         .where('Email', isEqualTo: FirebaseAuth.instance.currentUser.email)
@@ -116,7 +115,6 @@ class EditBloc extends Bloc<EditEvent, EditState> {
   }
 
   Future<void> getName() async {
-    print('get name working');
 
     await FirebaseFirestore.instance
         .collection('users')

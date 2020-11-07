@@ -39,9 +39,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               if (state is RegisteredState) {
                 Navigator.pushNamed(context, 'chat_list');
               }
-              if (state is SwitchToLoginState){
-                Navigator.pushNamed(context, 'login_screen');
-              }
+
             },
             child: BlocBuilder<RegisterBloc, RegisterState>(
                 cubit: bloc,
@@ -67,7 +65,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 tag: 'logo',
                                 child: Container(
                                   height: 200.0,
-                                  child: Image.asset('images/logo.png'),
+                                  child: Image.asset('images/1721.png'),
                                 ),
                               ),
                             ),
@@ -150,7 +148,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                             FlatButton(
                               onPressed: () {
-                                bloc.add(SwitchToLoginEvent());
+                                Navigator.of(context).pop();
                               },
                               child: Text('Switch to Login IN'),
                             ),
@@ -179,3 +177,5 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     bloc.close();
   }
 }
+
+

@@ -45,3 +45,4 @@ class BlockEvent extends ChatEvent {
   @override
   List<Object> get props => [this.email, this.roomId];
 }
+

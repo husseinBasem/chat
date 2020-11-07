@@ -66,7 +66,3 @@ class RegisteredState extends RegisterState {
   List<Object> get props => [];
 }
 
-class SwitchToLoginState extends RegisterState{
-  @override
-  List<Object> get props => [];
-}

@@ -9,10 +9,7 @@ class EditInitial extends EditState {
   List<Object> get props => [];
 }
 
-class SwitchToChatListState extends EditState {
-  @override
-  List<Object> get props => [];
-}
+
 
 class UpdateUserImageState extends EditState {
   @override
@@ -77,7 +74,3 @@ class CheckUserState extends EditState {
   List<Object> get props => [error];
 }
 
-class SwitchToLoginState extends EditState {
-  @override
-  List<Object> get props => [];
-}

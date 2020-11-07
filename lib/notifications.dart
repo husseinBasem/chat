@@ -10,6 +10,7 @@ class Notifications {
   FlutterLocalNotificationsPlugin();
 
 
+
   void registerNotification() {
     firebaseMessaging.requestNotificationPermissions();
 
@@ -23,6 +24,7 @@ class Notifications {
         }, onResume: (Map<String, dynamic> message) {
       return;
     }, onLaunch: (Map<String, dynamic> message) {
+
       return;
     });
 

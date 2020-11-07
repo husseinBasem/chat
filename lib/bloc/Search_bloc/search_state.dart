@@ -17,12 +17,6 @@ class ChangeUserState extends SearchState {
   List<Object> get props => [this.search];
 }
 
-class SwitchToChatListState extends SearchState {
-  @override
-  List<Object> get props => [];
-}
 
-class SwitchToInfoState extends SearchState {
-  @override
-  List<Object> get props => [];
-}
+
+

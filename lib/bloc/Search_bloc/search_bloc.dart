@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -16,10 +15,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) async* {
     if (event is ChangeUserEvent) {
       yield ChangeUserState(search: search = event.search.trim());
-    } else if (event is SwitchToChatListEvent) {
-      yield SwitchToChatListState();
-    } else if (event is SwitchToInfoEvent) {
-      yield SwitchToInfoState();
     }
   }
 }

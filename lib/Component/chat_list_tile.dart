@@ -1,21 +1,26 @@
+import 'package:chat/Transition/slide_right_route.dart';
+import 'package:chat/bloc/chat_list_bloc/chat_list_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../chat_id.dart';
 import '../Screens/chat_screen.dart';
+import 'image.dart';
 
 class ChatsListTile extends StatelessWidget {
   ChatsListTile(
       {this.receiverEmail,
       this.lastMessage,
       this.messagesUnSeen,
-      this.showIcon});
+      this.showIcon,
+      this.chatListBloc});
 
   final String receiverEmail, lastMessage;
   final int messagesUnSeen;
   final bool showIcon;
-  CreateChatId createChatId = CreateChatId();
+  final CreateChatId  createChatId = CreateChatId();
+  final ChatListBloc chatListBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +30,7 @@ class ChatsListTile extends StatelessWidget {
           .where('Email', isEqualTo: receiverEmail)
           .snapshots(),
       builder: (context, snapshot) {
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
@@ -35,8 +41,10 @@ class ChatsListTile extends StatelessWidget {
             itemCount: snapshot.data.docs.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              final String imageLink =
-                  snapshot.data.docs[index].data()['userImage'];
+
+
+
+
 
               return Column(
                 children: <Widget>[
@@ -53,22 +61,17 @@ class ChatsListTile extends StatelessWidget {
                       ),
                       leading: CircleAvatar(
                         radius: 25.0,
-                        backgroundColor: Colors.lightBlueAccent,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: Colors.blueAccent,
-                              image: imageLink.isEmpty == true
-                                  ? DecorationImage(
-                                      image: AssetImage(
-                                        'images/profile1.jpg',
-                                      ),
-                                      fit: BoxFit.cover)
-                                  : DecorationImage(
-                                      image: NetworkImage(imageLink),
-                                      fit: BoxFit.cover)),
+                        child: ImageWidget(
+                          width: 65.0,
+                          changePhoto: false,
+                          firstLetter: snapshot.data.docs[index].data()['Name'][0],
+                          networkImage: snapshot.data.docs[index].data()['userImage'],
+
+
                         ),
                       ),
+
+
                       trailing: messagesUnSeen == 0 || showIcon == true
                           ? null
                           : CircleAvatar(
@@ -81,21 +84,38 @@ class ChatsListTile extends StatelessWidget {
                               ),
                             ),
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatScreen(
-                                    name: snapshot.data.docs[index]
-                                        .data()['Name'],
-                                    roomId: createChatId.getChatID(
-                                        FirebaseAuth.instance.currentUser.email,
-                                        snapshot.data.docs[index]
-                                            .data()['Email']),
-                                    image: imageLink,
-                                    token: snapshot.data.docs[index]
-                                        .data()['mobileToken'],
-                                    email: snapshot.data.docs[index]
-                                        .data()['Email'])));
+
+                        chatListBloc.add(SwitchToChatScreenEvent(
+                            mobileToken:snapshot.data.docs[index].data()['mobileToken'] ,
+                            roomId:createChatId.getChatID(
+                                FirebaseAuth.instance.currentUser.email,
+                                snapshot.data.docs[index]
+                                    .data()['Email']) ,email:snapshot.data.docs[index]
+                                            .data()['Email'] ));
+
+
+                        chatListBloc.startConversion(
+                            email:snapshot.data.docs[index].data()['Email'],
+                            roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, snapshot.data.docs[index].data()['Email']),
+                            mobileToken: snapshot.data.docs[index].data()['mobileToken']);
+
+                        Navigator.push(context, SlideRightRoute(page: ChatScreen(
+                            name: snapshot.data.docs[index]
+                                .data()['Name'],
+                            roomId: createChatId.getChatID(
+                                FirebaseAuth.instance.currentUser.email,
+                                snapshot.data.docs[index]
+                                    .data()['Email']),
+                            image: snapshot.data.docs[index].data()['userImage'],
+                            token: snapshot.data.docs[index]
+                                .data()['mobileToken'],
+                            email: snapshot.data.docs[index]
+                                .data()['Email']),dx: 1.0,dy: 0.0));
+
+
+
+
+
                       },
                     ),
                   ),

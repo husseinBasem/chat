@@ -18,10 +18,6 @@ class StartConversationEvent extends InfoEvent {
   List<Object> get props => [this.email, this.roomId, this.mobileToken];
 }
 
-class SwitchToChatScreenEvent extends InfoEvent {
-  @override
-  List<Object> get props => [];
-}
 
 class UserBlocEvent extends InfoEvent {
   final String email, roomId;
@@ -29,3 +25,4 @@ class UserBlocEvent extends InfoEvent {
   @override
   List<Object> get props => [this.roomId, this.email];
 }
+

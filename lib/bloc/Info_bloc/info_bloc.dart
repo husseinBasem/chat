@@ -23,16 +23,15 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
           roomId: event.roomId,
           mobileToken: event.mobileToken);
       yield StartConversationState(email: event.email, roomId: event.roomId);
-    } else if (event is SwitchToChatScreenEvent) {
-      yield SwitchToChatScreenState();
-    } else if (event is UserBlocEvent) {
+    } else  if (event is UserBlocEvent) {
       bloc(roomId: event.roomId, email: event.email);
       yield UserBlocState(userBloc: userBloc);
     }
-    if (event is InfoInitialEvent) {
+    else if (event is InfoInitialEvent) {
       getBlockValue(email: event.email, roomId: event.roomId);
       yield InfoInitialState();
     }
+
   }
 
   startConversion({String email, roomId, mobileToken}) async {

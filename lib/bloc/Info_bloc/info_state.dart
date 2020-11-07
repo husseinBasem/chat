@@ -16,10 +16,6 @@ class StartConversationState extends InfoState {
   List<Object> get props => [this.email, this.roomId, this.mobileToken];
 }
 
-class SwitchToChatScreenState extends InfoState {
-  @override
-  List<Object> get props => [];
-}
 
 class UserBlocState extends InfoState {
   final bool userBloc;
@@ -27,3 +23,4 @@ class UserBlocState extends InfoState {
   @override
   List<Object> get props => [this.userBloc];
 }
+

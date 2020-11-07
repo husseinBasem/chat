@@ -61,8 +61,3 @@ class RegisteredEvent extends RegisterEvent {
   @override
   List<Object> get props => [];
 }
-
-class SwitchToLoginEvent extends RegisterEvent {
-  @override
-  List<Object> get props => [];
-}

@@ -1,3 +1,4 @@
+import 'package:chat/Transition/slide_right_route.dart';
 import 'package:flutter/material.dart';
 import 'package:chat/constans.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/bloc/Chat_bloc/chat_bloc.dart';
 
 import '../Component/image.dart';
+import 'chat_list.dart';
 
 //User  loggedInUser;
 
@@ -25,9 +27,9 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
 
-//  final _auth = FirebaseAuth.instance;
   String _message;
   ChatBloc chatBloc;
+
 
   @override
   void initState() {
@@ -43,37 +45,67 @@ class _ChatScreenState extends State<ChatScreen> {
     chatBloc.close();
   }
 
-//  void getCurrentUser() {
-//
-//    try {
-//      final user = _auth.currentUser;
-//      if (user != null) {
-//        loggedInUser = user;
-//      }
-//    }catch(e){
-//      print(e);
-//    }
-//  }
+
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context,) {
     return BlocProvider<ChatBloc>(
       create: (context) => ChatBloc(),
       child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
         chatBloc = BlocProvider.of<ChatBloc>(context);
-
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
+
+
+
             actions: <Widget>[
-              Padding(
-                padding:  EdgeInsets.all(8.0),
-                child: ImageWidget(changePhoto: false,networkImage: widget.image,height: 40.0,width: 40.0,),
+
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          width: 30.0,
+                          padding: EdgeInsets.all(0.0),
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back_ios,size: 25.0,color: Colors.black54,),
+                            onPressed: ()=>Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: ChatList(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false),
+                            alignment: Alignment.centerRight,
+                          ),
+                        ),
+
+                        RawMaterialButton(
+                          constraints: BoxConstraints(),
+                          onPressed: ()=>Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: ChatList(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false),
+                          child: Text('Chats',style: TextStyle(color: Colors.black54,fontSize: 15.0,),textAlign: TextAlign.left,),
+                        ),
+                      ],
+                    ),
+
+
+
+                    Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.black54),),
+
+                    Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child: ImageWidget(changePhoto: false,networkImage: widget.image,height: 40.0,width: 40.0,firstLetter: widget.name[0],),
+                    ),
+
+                  ],
+                ),
               ),
+
+
+
+
+
             ],
-            title: Text(widget.name),
-            centerTitle: true,
+
             backgroundColor: Colors.lightBlueAccent,
 
           ),
@@ -104,12 +136,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                       builder: (context, snapshot) {
                                         chatBloc.add(BlockEvent(roomId: widget.roomId, email: widget.email));
-
                                         if (chatBloc.numberOFMessagesAreNotSeen == null) {
                                           chatBloc.add(GetValueEvent(email: widget.email, roomId: widget.roomId));
                                           return Container();
 
-                                        } else if (snapshot.hasData && chatBloc.numberOFMessagesAreNotSeen != null) {
+                                        } else
+                                          if (snapshot.hasData && chatBloc.numberOFMessagesAreNotSeen != null) {
                                           return ListView.builder(
                                               shrinkWrap: true,
                                               physics: NeverScrollableScrollPhysics(),
@@ -171,6 +203,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                         builder: (context, snapshot) {
 
                                                                           if (snapshot.hasData) {
+                                                                            chatBloc.numberOFMessagesAreNotSeen= snapshot.data.data()['messagesArenotSeen'];
+
                                                                             return Container(
                                                                               child: index >= snapshot.data.data()['messagesArenotSeen']
                                                                                   ? Icon(Icons.done_all, color: Colors.white, size: 15.0,)
