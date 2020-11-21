@@ -7,6 +7,7 @@ part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   String search = '';
+    String currentUser;
   SearchBloc() : super(SearchInitial());
 
   @override
@@ -16,5 +17,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if (event is ChangeUserEvent) {
       yield ChangeUserState(search: search = event.search.trim());
     }
+
   }
+
+
 }

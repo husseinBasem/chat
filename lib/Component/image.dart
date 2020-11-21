@@ -11,6 +11,7 @@ class ImageWidget extends StatelessWidget {
      this.width,
     this.changePhoto = true,
     this.onPressed,
+    this.boxShadow,
 
 
 
@@ -20,6 +21,7 @@ class ImageWidget extends StatelessWidget {
   final String networkImage,firstLetter;
   final bool changePhoto;
   final double height,width;
+  final BoxShadow boxShadow;
 
 
   @override
@@ -30,14 +32,16 @@ class ImageWidget extends StatelessWidget {
       children: <Widget>[
         CachedNetworkImage(
           imageUrl: networkImage,
+          placeholder: (context, url) => Center(child: SizedBox(width: width/3,height: width/3,child: CircularProgressIndicator(backgroundColor: Colors.white,strokeWidth: 2.0,))),
           imageBuilder: (context,imageProvider)=>
             Container(
-              height: height,  //110.0
-              width: width,    //100
+              height: height,
+              width: width,
               decoration: BoxDecoration(
+                boxShadow:boxShadow==null?null:[boxShadow],
                 image: DecorationImage(
                     image: imageProvider,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill
                 ),
                   borderRadius: BorderRadius.circular(100),
                   color: Colors.blueAccent,
@@ -48,14 +52,12 @@ class ImageWidget extends StatelessWidget {
                 height: height,  //110.0
                 width: width,    //100
                 decoration: BoxDecoration(
-//                    image: DecorationImage(
-//                      fit: BoxFit.cover, image: null,
-//                    ),
+
                   borderRadius: BorderRadius.circular(100),
                   color: Colors.blueAccent,
                 ),
-              
-              child: Center(child: Text(firstLetter.toUpperCase(),style: TextStyle(color: Colors.white,fontSize: width/2,),)),
+
+                child: Center(child: Text(firstLetter.toUpperCase(),style: TextStyle(color: Colors.white,fontSize: width/2,),)),
               ),
 
 
@@ -68,12 +70,12 @@ class ImageWidget extends StatelessWidget {
         Container(
           child:changePhoto == true? MaterialButton(
             onPressed: onPressed,
-            color: Colors.blueAccent,
-            height: 25.0,
+            color: Colors.white,
+//            height: 30.0,
             child: Icon(
-              Icons.add,
+              Icons.add_photo_alternate,
               size: 25.0,
-              color: Colors.white,
+              color: Color(0xff4b4c57),
             ),
             shape: CircleBorder(side: BorderSide(color: Colors.white)),
           ):null

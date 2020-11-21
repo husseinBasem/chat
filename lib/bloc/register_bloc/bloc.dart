@@ -76,7 +76,15 @@ if (event is SecondCheckUserEvent) {
     return result.docs.isEmpty;
 
   }
-
+  setSearchParam(String caseNumber) {
+    List<String> caseSearchList = List();
+    String temp = "";
+    for (int i = 0; i < caseNumber.length; i++) {
+      temp = temp + caseNumber[i];
+      caseSearchList.add(temp);
+    }
+    return caseSearchList;
+  }
   Future<void>registerUser(_email,_password,_userName,_name) async {
 
   final _auth = FirebaseAuth.instance;
@@ -93,6 +101,7 @@ if (event is SecondCheckUserEvent) {
 
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: _email.trim(), password: _password.trim());
+
       _fireStore
           .collection('users').doc(_email.trim())
           .set({
@@ -103,6 +112,7 @@ if (event is SecondCheckUserEvent) {
         'userImage' : '',
         'mobileToken': await _firebaseMessaging.getToken(),
         'bio':'',
+        'caseSearch':setSearchParam(_userName.trim()),
       })
           .catchError((error) {
 

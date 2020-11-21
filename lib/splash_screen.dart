@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(Duration(milliseconds: 2500), () {
-      Navigator.pushAndRemoveUntil(context, FadeRoute(page: ChatList()), (Route<dynamic> route) => false);
+      Navigator.pushAndRemoveUntil(context, FadeRoute(page: getWidget()), (Route<dynamic> route) => false);
     });
   }
 

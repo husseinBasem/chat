@@ -1,19 +1,23 @@
 import 'package:chat/bloc/Edit_bloc/edit_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class UserNameWidget extends StatelessWidget {
   const UserNameWidget({
     Key key,
     @required this.editBloc,
     @required this.userName,
+    this.color=Colors.black,
   }) : super(key: key);
 
   final EditBloc editBloc;
   final String userName;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white10,
       child: TextFormField(
         onChanged: (value) {
           editBloc.add(ChangeUserNameEvent(value));
@@ -30,13 +34,15 @@ class UserNameWidget extends StatelessWidget {
         initialValue: userName,
         textAlign: TextAlign.left,
         style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 17,
-          color: Colors.black,
+          fontSize: 16,
+          color: color,
         ),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(left: 10.0),
-            hintText: 'User Name',
+
+//            hintText: 'User Name',
+            prefixStyle:TextStyle(color: Colors.white,fontSize: 16.0) ,
+            prefixText: 'Username  ',
             enabledBorder: InputBorder.none,
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,

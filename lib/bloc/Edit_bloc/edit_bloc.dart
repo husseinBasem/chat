@@ -82,6 +82,15 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     }
   }
 
+  setSearchParam(String caseNumber) {
+    List<String> caseSearchList = List();
+    String temp = "";
+    for (int i = 0; i < caseNumber.length; i++) {
+      temp = temp + caseNumber[i];
+      caseSearchList.add(temp);
+    }
+    return caseSearchList;
+  }
   Future<void> updateUserDetail() async {
     await FirebaseFirestore.instance
         .collection('users')
@@ -90,6 +99,9 @@ class EditBloc extends Bloc<EditEvent, EditState> {
       'Name': fullName.trim(),
       'bio': bio.trim(),
       'User': userName.trim(),
+      'caseSearch':setSearchParam(userName.trim()),
+
+
     });
   }
 
@@ -127,8 +139,16 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     });
   }
 
-  void signOut() {
+  Future<void> signOut()async {
     FirebaseAuth.instance.signOut();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.email)
+        .update({
+      'mobileToken':''
+
+
+    });
   }
 
   Future<bool> usernameCheck(String username) async {

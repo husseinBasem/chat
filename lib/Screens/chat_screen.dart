@@ -10,7 +10,6 @@ import 'package:chat/bloc/Chat_bloc/chat_bloc.dart';
 import '../Component/image.dart';
 import 'chat_list.dart';
 
-//User  loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({this.name, this.roomId, this.image, this.token, this.email});
@@ -29,13 +28,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String _message;
   ChatBloc chatBloc;
-
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     chatBloc = ChatBloc();
     chatBloc.add(ChatWithEvent(token: widget.token));
+
+
   }
 
   @override
@@ -54,67 +55,130 @@ class _ChatScreenState extends State<ChatScreen> {
       child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
         chatBloc = BlocProvider.of<ChatBloc>(context);
         return Scaffold(
+          backgroundColor:Colors.white10 ,
+
+
+          bottomNavigationBar:Container(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            decoration: kMessageContainerDecoration,
+            child: chatBloc.block == false
+                ? Row(
+//                                  crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+
+                Expanded(
+                  child: TextField(
+                    maxLines: 50,
+                    minLines: 1,
+                    controller: messageTextController,
+                    onChanged: (value) {
+                      _message = value;
+                      chatBloc.add(MessagePlayLoadEvent(
+                          token: widget.token,
+                          message: _message));
+                    },
+                    decoration: kMessageTextFileDecoration,
+                    style: TextStyle(color: Colors.white,),
+
+                  ),
+                ),
+                ButtonTheme(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minWidth: 0.0,
+
+                  child: FlatButton(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    onPressed: () {
+                      messageTextController.clear();
+
+                      chatBloc.add(AddConversationMessageEvent(
+                          roomId: widget.roomId,
+                          message: _message,
+                          email: widget.email));
+                      _scrollController.animateTo(
+                          _scrollController.position.minScrollExtent,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.ease);
+                    
+
+                    },
+
+                    child: Text('Send',
+                      style: kSendButtonTextStyle,
+                    ),
+
+                  ),
+                ),
+              ],
+            )
+                : Container(
+              padding: EdgeInsets.only(bottom: 5.0),
+              color: Colors.red,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'You Got Blocked From ${widget.name}',
+                    style: TextStyle(height: 2.0, fontSize: 17.0, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ) ,
           appBar: AppBar(
             automaticallyImplyLeading: false,
-
-
-
+            backgroundColor: Colors.white10,
+            elevation: 0.0,
             actions: <Widget>[
+          Expanded(
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
 
+                Row(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          width: 30.0,
-                          padding: EdgeInsets.all(0.0),
-                          child: IconButton(
-                            icon: Icon(Icons.arrow_back_ios,size: 25.0,color: Colors.black54,),
-                            onPressed: ()=>Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: ChatList(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false),
-                            alignment: Alignment.centerRight,
-                          ),
-                        ),
-
-                        RawMaterialButton(
-                          constraints: BoxConstraints(),
-                          onPressed: ()=>Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: ChatList(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false),
-                          child: Text('Chats',style: TextStyle(color: Colors.black54,fontSize: 15.0,),textAlign: TextAlign.left,),
-                        ),
-                      ],
+                    Container(
+                      width: 30.0,
+                      padding: EdgeInsets.all(0.0),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios,size: 25.0,color: Colors.white,),
+                        onPressed: ()=>Navigator.pushAndRemoveUntil(context, SlideRightRoute(page: ChatList(),dx: -1.0,dy: 0.0),(Route<dynamic> route) => false),
+                        alignment: Alignment.centerRight,
+                      ),
                     ),
 
-
-
-                    Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.black54),),
-
-                    Padding(
-                      padding:  EdgeInsets.all(8.0),
-                      child: ImageWidget(changePhoto: false,networkImage: widget.image,height: 40.0,width: 40.0,firstLetter: widget.name[0],),
-                    ),
 
                   ],
                 ),
-              ),
 
 
 
+                Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.white),),
 
+                Padding(
+                  padding:  EdgeInsets.all(8.0),
+                  child: ImageWidget(changePhoto: false,networkImage: widget.image,height: 40.0,width: 40.0,firstLetter: widget.name[0],),
+                ),
 
-            ],
-
-            backgroundColor: Colors.lightBlueAccent,
-
+              ],
+            ),
           ),
+          ]
+        ),
+
+
+
 
 
           body: SafeArea(
               child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return SingleChildScrollView(
+                      controller: _scrollController,
                       reverse: true,
                       scrollDirection: Axis.vertical,
                       child: ConstrainedBox(
@@ -126,6 +190,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
+
+
 
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10.0),
@@ -167,15 +233,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           bottomRight: Radius.circular(30.0),
                                                           topRight: Radius.circular(30.0),
                                                           topLeft: Radius.circular(20.0),),
-                                                      color: isMe ? Colors.lightBlueAccent : Colors.black54,
+                                                      color: isMe ? Colors.lightBlueAccent : Colors.white10,
                                                         child: Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                                                           child: Container(
                                                               constraints: BoxConstraints(
-                                                                  maxWidth: MediaQuery.of(context).size.width / 2),
+                                                                  maxWidth: MediaQuery.of(context).size.width *0.75),
 
                                                               child: Row(
                                                                 textDirection: TextDirection.ltr,
+                                                                crossAxisAlignment: CrossAxisAlignment.end,
                                                                 mainAxisSize: MainAxisSize.min,
+
                                                                 children: <Widget>[
                                                                   Flexible(
                                                                     child: Text(messages.data()['message'],
@@ -186,7 +254,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                     ),
                                                                   ),
 
-                                                                  Padding(padding: EdgeInsets.only(top: 7.0),
+                                                                  Padding(
+                                                                    padding:  EdgeInsets.only(right: 0.0,),
                                                                     child: Text('   ${messages.data()['timestamp'].substring(10, 16)} ',
                                                                       textAlign: TextAlign.left,
                                                                       style: TextStyle(
@@ -215,7 +284,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                       )
                                                                           : null),
                                                                 ],
-                                                              )),
+                                                              ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -229,59 +299,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       }),
                                 ),
                               ),
-                              Container(
-                                decoration: kMessageContainerDecoration,
-                                child: chatBloc.block == false
-                                    ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
 
-                                    Expanded(
-                                      child: TextField(
-                                        controller: messageTextController,
-                                        onChanged: (value) {
-                                          _message = value;
-                                          chatBloc.add(MessagePlayLoadEvent(
-                                              token: widget.token,
-                                              message: _message));
-                                          },
-                                        decoration: kMessageTextFileDecoration,
-                                      ),
-
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        messageTextController.clear();
-                                        chatBloc.add(AddConversationMessageEvent(
-                                            roomId: widget.roomId,
-                                            message: _message,
-                                            email: widget.email));
-                                        },
-
-                                      child: Text('Send',
-                                        style: kSendButtonTextStyle,
-                                      ),
-
-                                    ),
-                                  ],
-                                )
-                                    : Container(
-                                  padding: EdgeInsets.only(bottom: 5.0),
-                                  color: Colors.red,
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        'You Got Blocked From ${widget.name}',
-                                        style: TextStyle(height: 2.0, fontSize: 17.0, color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ]),
+                            ],
+                        ),
                       ),
                     );
                   })),

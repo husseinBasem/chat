@@ -63,12 +63,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> getBlockValue({String roomId, email}) async {
     await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
-      if (value != null) block = value.data()[email.replaceAll('.', '_')];
+      if (value.data() != null)
+        block = value.data()[email.replaceAll('.', '_')];
     });
   }
 
   Future<void> getNumberUnSeenMessageValue({String roomId, email}) async {
     await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
+      if (value.data() !=null)
       numberOFMessagesAreNotSeen = value.data()['messagesArenotSeen'];
     });
   }

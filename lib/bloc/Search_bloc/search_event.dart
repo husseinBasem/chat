@@ -14,4 +14,3 @@ class ChangeUserEvent extends SearchEvent {
 
 
 
-

@@ -25,7 +25,12 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     createChatId = CreateChatId();
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    searchBloc.close();
   }
 
   @override
@@ -36,115 +41,100 @@ class _SearchScreenState extends State<SearchScreen> {
         create: (context) => SearchBloc(),
         child: SafeArea(
           child: BlocBuilder<SearchBloc, SearchState>(builder: (context, state) {
-              searchBloc = BlocProvider.of<SearchBloc>(context);
-
+            searchBloc = BlocProvider.of<SearchBloc>(context);
               return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                        child: SearchWidget(
-                      onChanged: (value) {
-                        searchBloc.add(ChangeUserEvent(search: value));
-                      },
-                      autofocus: true,
-                    ),
-                    ),
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                            color: Colors.white, fontSize: 15.0),
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: SearchWidget(
+                              onChanged: (value) {
+                                searchBloc.add(ChangeUserEvent(search: value));
+                                },
+                              autofocus: true,
+                              readonly: false,
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              },
+                            child: Text('Cancel',
+                              style: TextStyle(color: Colors.white, fontSize: 15.0),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .where('User', isEqualTo: searchBloc.search)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasData) {
-                          return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              _sendToEmail = snapshot
-                                  .data.documents[index]
-                                  .data()['Email']
-                                  .toString();
+                      SizedBox(height: 10.0,),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: StreamBuilder(
+                            stream: FirebaseFirestore.instance.collection('users').where('caseSearch', arrayContains:  searchBloc.search ).snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator(),);
+                              } else if (snapshot.hasData) {
 
-                              return Column(
-                                children: <Widget>[
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black12,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(20.0)),
-                                    ),
-                                    child: ListTile(
-                                      onTap: () {
-                                        Navigator.push(context, SlideRightRoute(page:Info(
-                                          email: _sendToEmail,
-                                          roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, _sendToEmail),
-                                        ) ,dx: 1.0,dy: 0.0));
-                                      },
-                                      title: Text(
-                                        snapshot.data.documents[index]
-                                            .data()['Name']
-                                            .toString(),
-                                        style: TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                      leading: CircleAvatar(
-                                          radius: 20.0,
-                                          child: ImageWidget(
-                                              networkImage: snapshot.data.documents[index].data()['userImage'],
-                                              firstLetter: snapshot.data.documents[index].data()['Name'][0],
-                                              width: 60.0,
-                                              changePhoto: false ,
-
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    _sendToEmail = snapshot.data.documents[index].data()['Email'].toString();
+                                    if(snapshot.data.documents[index].data()['Uid']!= FirebaseAuth.instance.currentUser.uid){
+                                    return Column(
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black12,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20.0)),
                                           ),
+                                          child: ListTile(
+                                            onTap: () {
+                                              Navigator.push(context, SlideRightRoute(page:Info(
+                                                email: _sendToEmail,
+                                                roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, _sendToEmail),)
+                                                  ,dx: 1.0,dy: 0.0));
+                                              },
+                                            title: Text(snapshot.data.documents[index].data()['Name'].toString(),
+                                              style: TextStyle(color: Colors.white),),
+                                            leading: CircleAvatar(
+                                              radius: 20.0,
+                                              child: ImageWidget(
+                                                networkImage: snapshot.data.documents[index].data()['userImage'],
+                                                firstLetter: snapshot.data.documents[index].data()['Name'][0],
+                                                width: 60.0,
+                                                changePhoto: false ,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.0,)
+                                      ],
+                                    );
+                                    }
+                                    else{
+                                      return Container();
+                                    }
+                                    },
+                                  itemCount: snapshot.data.documents.length,
+                                );
 
-                                               ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5.0,
-                                  )
-                                ],
-                              );
-                            },
-                            itemCount: snapshot.data.documents.length,
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ]),
+
+                              } else {
+                                return Container();
+                              }
+                              },
+                          ),
+                        ),
+                      ),
+                    ]),
               );
-            }),
+          }),
         ),
       ),
     );

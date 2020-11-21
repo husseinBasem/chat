@@ -18,7 +18,7 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
     InfoEvent event,
   ) async* {
     if (event is StartConversationEvent) {
-      startConversion(
+     await startConversion(
           email: event.email,
           roomId: event.roomId,
           mobileToken: event.mobileToken);
@@ -45,9 +45,11 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
         .doc(roomId)
         .get()
         .then((value) {
-      lastMessage = value.data()['lastMessage'];
-      sender = value.data()['users'][1];
-      unSeenMessages = value.data()['messagesArenotSeen'];
+          if(value.data() !=null) {
+            lastMessage = value.data()['lastMessage'];
+            sender = value.data()['users'][1];
+            unSeenMessages = value.data()['messagesArenotSeen'];
+          }
     });
 
     Map<String, dynamic> chatRoomMap = {
@@ -89,6 +91,7 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
         .doc(roomId)
         .get()
         .then((value) {
+          if(value.data() != null)
       userBloc = value.data()[email.replaceAll('.', '_')];
     });
   }
