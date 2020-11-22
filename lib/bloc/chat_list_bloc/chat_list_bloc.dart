@@ -25,6 +25,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   startConversion({String email, roomId, mobileToken}) async {
     String lastMessage, sender;
     int unSeenMessages;
+    bool heBlocked,youBlocked;
 
     List<String> users = [email, FirebaseAuth.instance.currentUser.email];
 
@@ -36,6 +37,9 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       lastMessage = value.data()['lastMessage'];
       sender = value.data()['users'][1];
       unSeenMessages = value.data()['messagesArenotSeen'];
+      youBlocked = value.data()[email.replaceAll('.', '_')];
+      heBlocked = value.data()[FirebaseAuth.instance.currentUser.email.replaceAll('.', '_')];
+
     });
 
     Map<String, dynamic> chatRoomMap = {
@@ -46,8 +50,8 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       'messagesArenotSeen': sender == FirebaseAuth.instance.currentUser.email
           ? unSeenMessages
           : 0,
-      FirebaseAuth.instance.currentUser.email.replaceAll('.', '_'): false,
-      email.replaceAll('.', '_'): false,
+      FirebaseAuth.instance.currentUser.email.replaceAll('.', '_'): heBlocked,
+      email.replaceAll('.', '_'): youBlocked,
     };
 
     await FirebaseFirestore.instance

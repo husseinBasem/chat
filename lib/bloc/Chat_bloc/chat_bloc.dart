@@ -12,7 +12,7 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(InitialState());
 
-  bool block = false;
+  bool heBlocked,youBlocked = false;
   int numberOFMessagesAreNotSeen;
 
   Map<String, String> messages = {};
@@ -48,6 +48,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else if (event is BlockEvent) {
       await getBlockValue(email: event.email, roomId: event.roomId);
       yield BlockState();
+    } else if (event is UnBlockEvent){
+      await bloc(roomId: event.roomId,email: event.email);
+      yield UnBlockState();
     }
 
   }
@@ -64,7 +67,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> getBlockValue({String roomId, email}) async {
     await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
       if (value.data() != null)
-        block = value.data()[email.replaceAll('.', '_')];
+        youBlocked = value.data()[email.replaceAll('.', '_')];
+        heBlocked = value.data()[FirebaseAuth.instance.currentUser.email.replaceAll('.','_')];
     });
   }
 
@@ -139,4 +143,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         .doc(roomId)
         .update({'lastMessage': message, 'users': users});
   }
+  Future<void> bloc({String roomId, email}) async {
+    await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).update(
+      {email.replaceAll('.', '_'): false},
+    );
+  }
+
 }

@@ -24,11 +24,11 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
           mobileToken: event.mobileToken);
       yield StartConversationState(email: event.email, roomId: event.roomId);
     } else  if (event is UserBlocEvent) {
-      bloc(roomId: event.roomId, email: event.email);
+      await bloc(roomId: event.roomId, email: event.email);
       yield UserBlocState(userBloc: userBloc);
     }
     else if (event is InfoInitialEvent) {
-      getBlockValue(email: event.email, roomId: event.roomId);
+      await getBlockValue(email: event.email, roomId: event.roomId);
       yield InfoInitialState();
     }
 

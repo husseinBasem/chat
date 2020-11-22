@@ -17,7 +17,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  String _sendToEmail;
   CreateChatId createChatId;
   SearchBloc searchBloc;
 
@@ -83,7 +82,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
-                                    _sendToEmail = snapshot.data.documents[index].data()['Email'].toString();
                                     if(snapshot.data.documents[index].data()['Uid']!= FirebaseAuth.instance.currentUser.uid){
                                     return Column(
                                       children: <Widget>[
@@ -96,8 +94,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                           child: ListTile(
                                             onTap: () {
                                               Navigator.push(context, SlideRightRoute(page:Info(
-                                                email: _sendToEmail,
-                                                roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, _sendToEmail),)
+                                                email: snapshot.data.documents[index].data()['Email'].toString(),
+                                                roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, snapshot.data.documents[index].data()['Email'].toString()),)
                                                   ,dx: 1.0,dy: 0.0));
                                               },
                                             title: Text(snapshot.data.documents[index].data()['Name'].toString(),

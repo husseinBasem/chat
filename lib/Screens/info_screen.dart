@@ -24,7 +24,7 @@ class _InfoState extends State<Info> {
   void initState() {
     super.initState();
     infoBloc = InfoBloc();
-//
+
   }
 
   @override
@@ -133,7 +133,8 @@ class _InfoState extends State<Info> {
                           Container(
                             margin:EdgeInsets.symmetric(horizontal: 5.0),
                             child: RawMaterialButton(
-                                onPressed: () {
+                                onPressed:infoBloc.userBloc == false?
+                                    () {
                                   infoBloc.add(StartConversationEvent(
                                       email: widget.email,
                                       roomId: widget.roomId,
@@ -145,7 +146,7 @@ class _InfoState extends State<Info> {
                                       token: snapshot.data.data()['mobileToken'],
                                       email: widget.email)
                                       ,dx: 1.0,dy: 0.0),(Route<dynamic> route) => false);
-                                },
+                                }:null,
                               fillColor: Colors.white10,
 
                                 child: Container(
@@ -231,4 +232,6 @@ class _InfoState extends State<Info> {
       ),
     );
   }
+
+
 }

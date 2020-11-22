@@ -50,6 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context,) {
+
     return BlocProvider<ChatBloc>(
       create: (context) => ChatBloc(),
       child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
@@ -61,10 +62,9 @@ class _ChatScreenState extends State<ChatScreen> {
           bottomNavigationBar:Container(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             decoration: kMessageContainerDecoration,
-            child: chatBloc.block == false
+            child: chatBloc.heBlocked == false
                 ? Row(
-//                                  crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
+              children: chatBloc.youBlocked==false? <Widget>[
 
                 Expanded(
                   child: TextField(
@@ -110,6 +110,28 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   ),
                 ),
+              ]:<Widget>[
+
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+
+                      FlatButton(
+                          onPressed: (){
+                            chatBloc.add(UnBlockEvent(roomId: widget.roomId, email: widget.email));
+
+                          },
+                          child: Text('UnBlock',
+                            style: TextStyle(color: Colors.white,fontSize: 18.0),),
+
+                      ),
+
+                    ],
+                  ),
+                )
+
               ],
             )
                 : Container(
@@ -195,7 +217,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                               Padding(
                                 padding: EdgeInsets.only(bottom: 10.0),
-                                child: chatBloc.block == true ? null : Container(
+                                child: chatBloc.heBlocked == true ? null : Container(
                                   child: StreamBuilder(
                                       stream: FirebaseFirestore.instance.collection("ChatRoom").doc(widget.roomId).collection("chats")
                                           .orderBy("timestamp", descending: true).snapshots(),

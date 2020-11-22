@@ -39,4 +39,9 @@ class BlockState extends ChatState {
   List<Object> get props => [];
 }
 
+class UnBlockState extends ChatState {
+  @override
+  List<Object> get props => [];
+}
+
 

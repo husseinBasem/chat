@@ -46,3 +46,12 @@ class BlockEvent extends ChatEvent {
   List<Object> get props => [this.email, this.roomId];
 }
 
+class UnBlockEvent extends ChatEvent {
+  final String email,roomId;
+  UnBlockEvent({this.email,this.roomId});
+  @override
+  List<Object> get props => [this.email, this.roomId];
+
+
+}
+
