@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'edit_event.dart';
@@ -16,6 +17,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
 
   File _image;
   String userName, fullName, bio, imageLink = '', userNameError;
+  bool spinner=false;
   final picker = ImagePicker();
 
   @override
@@ -36,12 +38,14 @@ class EditBloc extends Bloc<EditEvent, EditState> {
       updateUserDetail();
       yield UpdateUserDetailState();
     } else if (event is GetImageEvent) {
-      await getImage();
-      await updateUserImage();
+       yield Spinner(spinner: spinner=true);
+
+       await getImage();
+       await updateUserImage();
       await downloadImage();
+       yield Spinner(spinner: spinner=false);
 
-
-      yield GetImageState();
+       yield GetImageState();
     } else if (event is SignOutEvent) {
       signOut();
       yield SignOutState();
@@ -107,8 +111,26 @@ class EditBloc extends Bloc<EditEvent, EditState> {
 
   Future<void> getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+
     if (pickedFile != null) {
-      _image = File(pickedFile.path);
+      File cropped = await ImageCropper.cropImage(
+          sourcePath: pickedFile.path,
+          aspectRatio: CropAspectRatio(
+              ratioX: 1,
+              ratioY: 1,
+          ),
+          compressQuality: 100,
+          maxHeight: 130,
+          maxWidth: 130,
+          cropStyle: CropStyle.circle,
+          compressFormat:ImageCompressFormat.jpg,
+
+      );
+
+      _image = cropped;
+    }
+    else{
     }
   }
 

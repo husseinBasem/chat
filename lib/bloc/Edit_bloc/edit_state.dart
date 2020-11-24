@@ -74,3 +74,11 @@ class CheckUserState extends EditState {
   List<Object> get props => [error];
 }
 
+class Spinner extends EditState{
+  final bool spinner;
+  Spinner({this.spinner});
+  @override
+  List<Object> get props => [this.spinner];
+
+}
+
