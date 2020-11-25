@@ -1,6 +1,7 @@
 import 'package:chat/bloc/Edit_bloc/edit_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UserNameWidget extends StatelessWidget {
   const UserNameWidget({
@@ -33,15 +34,14 @@ class UserNameWidget extends StatelessWidget {
         maxLines: 1,
         initialValue: userName,
         textAlign: TextAlign.left,
-        style: TextStyle(
+        style: GoogleFonts.lora(
           fontSize: 16,
           color: color,
         ),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(left: 10.0),
 
-//            hintText: 'User Name',
-            prefixStyle:TextStyle(color: Colors.white,fontSize: 16.0) ,
+            prefixStyle:GoogleFonts.lora(color: Colors.white,fontSize: 16.0) ,
             prefixText: 'Username  ',
             enabledBorder: InputBorder.none,
             errorBorder: InputBorder.none,

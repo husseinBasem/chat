@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/bloc/Chat_bloc/chat_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Component/image.dart';
 import 'chat_list.dart';
@@ -179,7 +180,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
 
-                Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.white),),
+                Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.white,letterSpacing: 2),),
 
                 Padding(
                   padding:  EdgeInsets.all(8.0),
@@ -255,7 +256,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           bottomRight: Radius.circular(30.0),
                                                           topRight: Radius.circular(30.0),
                                                           topLeft: Radius.circular(20.0),),
-                                                      color: isMe ? Colors.lightBlueAccent : Colors.white10,
+                                                      color: isMe ? Colors.lightBlueAccent.withOpacity(0.5) : Colors.white10,
                                                         child: Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                                                           child: Container(
                                                               constraints: BoxConstraints(
@@ -271,8 +272,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                     child: Text(messages.data()['message'],
 
                                                                       textAlign: TextAlign.left,
-                                                                      style: TextStyle(color: Colors.white,
-                                                                          fontSize: 15.0),
+                                                                      style: GoogleFonts.markaziText(color: Colors.white, fontSize: 20.0,letterSpacing: 1),
                                                                     ),
                                                                   ),
 

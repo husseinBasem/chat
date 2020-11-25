@@ -12,7 +12,7 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(InitialState());
 
-  bool heBlocked,youBlocked = false;
+  bool heBlocked=false,youBlocked = false;
   int numberOFMessagesAreNotSeen;
 
   Map<String, String> messages = {};
