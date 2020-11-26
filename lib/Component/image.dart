@@ -71,13 +71,12 @@ class ImageWidget extends StatelessWidget {
           child:changePhoto == true? MaterialButton(
             onPressed: onPressed,
             color: Colors.white,
-//            height: 30.0,
             child: Icon(
-              Icons.add_photo_alternate,
+              Icons.edit,
               size: 25.0,
               color: Color(0xff4b4c57),
             ),
-            shape: CircleBorder(side: BorderSide(color: Colors.white)),
+            shape: CircleBorder(side: BorderSide(color: Colors.white,)),
           ):null
         ),
       ],

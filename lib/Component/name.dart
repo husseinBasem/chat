@@ -1,7 +1,6 @@
 import 'package:chat/bloc/Edit_bloc/edit_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class NameWidget extends StatelessWidget {
   const NameWidget({
@@ -27,9 +26,10 @@ class NameWidget extends StatelessWidget {
         maxLines: 1,
         initialValue: editBloc.fullName,
         textAlign: TextAlign.left,
-        style: GoogleFonts.lora(
+        style: TextStyle(
           fontSize: 16,
           color: color,
+          fontFamily: 'Lora'
         ),
         decoration: InputDecoration(
           suffixStyle: TextStyle(color:suffixColor ),

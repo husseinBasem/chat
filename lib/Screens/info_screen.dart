@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 
 class Info extends StatefulWidget {
@@ -112,10 +111,12 @@ class _InfoState extends State<Info> {
                               child: Text(
                                 snapshot.data.data()['Name'],
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.lora(
+                                style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 20,
-                                    color: Colors.white),
+                                    color: Colors.white,
+                                    fontFamily: 'Lora'
+                                ),
                               )),
                           SizedBox(height: 20),
                           Container(
@@ -126,7 +127,7 @@ class _InfoState extends State<Info> {
                                 : Text(
                                     snapshot.data.data()['bio'],
                                     textAlign: TextAlign.left,
-                                    style: GoogleFonts.lora(color: Colors.grey),
+                                    style: TextStyle(color: Colors.grey,fontFamily: 'Lora'),
 
                                   ),
                           ),

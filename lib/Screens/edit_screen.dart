@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../Component/bio.dart';
 import '../Component/image.dart';
@@ -150,7 +149,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
                                   child: Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text('Enter your name and add an optional profile photo.',style: GoogleFonts.lora(color: Colors.white,),)),
+                                      child: Text('Enter your name and add an optional profile photo.',style: TextStyle(color: Colors.white,fontFamily: 'Lora'),)),
                                 ),
                                 SizedBox(height: 25.0,),
                                 Divider(
@@ -170,7 +169,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('Any details such as age, occupation or city.\nExample: 23 y.o. designer from San Francisco.',style: GoogleFonts.lora(color: Colors.white,),
+                                    child: Text('Any details such as age, occupation or city.\nExample: 23 y.o. designer from San Francisco.',style: TextStyle(color: Colors.white,fontFamily: 'Lora'),
 
                                     ),
                                   ),

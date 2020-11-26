@@ -3,7 +3,6 @@ import 'package:chat/bloc/chat_list_bloc/chat_list_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../chat_id.dart';
 import '../Screens/chat_screen.dart';
 import 'image.dart';
@@ -107,7 +106,7 @@ class CustomListTile extends StatelessWidget {
                             children: <Widget>[
                             Text(
                               snapshot.data.docs[index].data()['Name'],
-                              style: GoogleFonts.cairo(color: Colors.white,fontSize: 18.0),
+                              style: TextStyle(color: Colors.white,fontSize: 18.0,fontFamily: 'Cairo'),
 
                             ),
                               SizedBox(height: 7.0,),

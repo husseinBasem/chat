@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/bloc/Chat_bloc/chat_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../Component/image.dart';
 import 'chat_list.dart';
@@ -272,7 +271,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                     child: Text(messages.data()['message'],
 
                                                                       textAlign: TextAlign.left,
-                                                                      style: GoogleFonts.markaziText(color: Colors.white, fontSize: 20.0,letterSpacing: 1),
+                                                                      style: TextStyle(color: Colors.white, fontSize: 20.0,letterSpacing: 1,fontFamily: 'Markazi'),
                                                                     ),
                                                                   ),
 

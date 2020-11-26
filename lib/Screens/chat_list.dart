@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../Component/Custom_list_tile.dart';
 import 'package:chat/bloc/chat_list_bloc/chat_list_bloc.dart';
 
@@ -49,7 +48,7 @@ class _ChatListState extends State<ChatList> {
                         height: 25.0,
                         child: Text(
                           'Chats',
-                          style: GoogleFonts.cookie(color: Colors.white, fontSize: 25.0,letterSpacing: 2),
+                          style: TextStyle(color: Colors.white, fontSize: 25.0,letterSpacing: 2,fontFamily: 'Cookie'),
                         ),
                       ),
                       SizedBox(
