@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 height: 24.0,
                               ),
                               RoundedButton(
-                                onPressed: login,
+                                onPressed: (){    bloc.add(LoginEvent(email: _email, password: _password));},
                                 text: 'Log In',
                                 color: Colors.lightBlueAccent,
 
@@ -154,12 +154,5 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  void login()  {
-    bloc.add(SpinnerOnEvent());
-    bloc.add(LoginEvent(email: _email, password: _password));
-    bloc.add(SpinnerOffEvent());
-    bloc.add(LoggedInEvent());
 
-
-  }
 }

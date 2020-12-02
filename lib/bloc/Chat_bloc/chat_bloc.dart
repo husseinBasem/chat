@@ -141,7 +141,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _fireStore
         .collection('ChatRoom')
         .doc(roomId)
-        .update({'lastMessage': message, 'users': users});
+        .update({
+      'lastMessage': message,
+      'users': users,
+      "timeStamp": DateTime.now().toString(),
+
+        });
   }
   Future<void> bloc({String roomId, email}) async {
     await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).update(

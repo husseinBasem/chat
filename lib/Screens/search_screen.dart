@@ -19,6 +19,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   CreateChatId createChatId;
   SearchBloc searchBloc;
+  var cache;
+
 
   @override
   void initState() {
@@ -72,11 +74,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       Expanded(
                         child: SingleChildScrollView(
                           child: StreamBuilder(
+                            initialData: cache,
                             stream: FirebaseFirestore.instance.collection('users').where('caseSearch', arrayContains:  searchBloc.search ).snapshots(),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Center(child: CircularProgressIndicator(),);
                               } else if (snapshot.hasData) {
+                                cache = snapshot.data;
 
                                 return ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),

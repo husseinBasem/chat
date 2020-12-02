@@ -25,10 +25,10 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     EditEvent event,
   ) async* {
      if (event is DownloadImageEvent) {
-      downloadImage();
+      await downloadImage();
       yield DownloadImageState();
     } else if (event is GetNameEvent) {
-      getName();
+      await getName();
       yield GetNameState();
     } else if (event is UpdateUserImageEvent) {
       await downloadImage();
@@ -47,7 +47,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
 
        yield GetImageState();
     } else if (event is SignOutEvent) {
-      signOut();
+      await signOut();
       yield SignOutState();
     } else if (event is ChangeNameEvent) {
       yield ChangeNameState(name: fullName = event.name);
@@ -91,6 +91,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     String temp = "";
     for (int i = 0; i < caseNumber.length; i++) {
       temp = temp + caseNumber[i];
+      if(temp.length>=3)
       caseSearchList.add(temp);
     }
     return caseSearchList;

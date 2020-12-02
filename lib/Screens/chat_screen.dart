@@ -29,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   String _message;
   ChatBloc chatBloc;
   ScrollController _scrollController = ScrollController();
+  var cache,cache1;
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
           backgroundColor:Colors.white10 ,
 
 
-          bottomNavigationBar:Container(
+          bottomNavigationBar: Container(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             decoration: kMessageContainerDecoration,
             child: chatBloc.heBlocked == false
@@ -91,7 +92,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onPressed: () {
                       messageTextController.clear();
-
                       chatBloc.add(AddConversationMessageEvent(
                           roomId: widget.roomId,
                           message: _message,
@@ -219,17 +219,20 @@ class _ChatScreenState extends State<ChatScreen> {
                                 padding: EdgeInsets.only(bottom: 10.0),
                                 child: chatBloc.heBlocked == true ? null : Container(
                                   child: StreamBuilder(
+                                    initialData: cache,
                                       stream: FirebaseFirestore.instance.collection("ChatRoom").doc(widget.roomId).collection("chats")
                                           .orderBy("timestamp", descending: true).snapshots(),
 
                                       builder: (context, snapshot) {
                                         chatBloc.add(BlockEvent(roomId: widget.roomId, email: widget.email));
+                                        cache = snapshot.data;
                                         if (chatBloc.numberOFMessagesAreNotSeen == null) {
                                           chatBloc.add(GetValueEvent(email: widget.email, roomId: widget.roomId));
                                           return Container();
 
                                         } else
                                           if (snapshot.hasData && chatBloc.numberOFMessagesAreNotSeen != null) {
+
                                           return ListView.builder(
                                               shrinkWrap: true,
                                               physics: NeverScrollableScrollPhysics(),
@@ -289,11 +292,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                   Padding(padding: EdgeInsets.only(top: 7.0),
                                                                       child: isMe ?
                                                                       StreamBuilder(
+                                                                        initialData: cache1,
                                                                         stream: FirebaseFirestore.instance.collection("ChatRoom").doc(widget.roomId).snapshots(),
                                                                         builder: (context, snapshot) {
 
                                                                           if (snapshot.hasData) {
                                                                             chatBloc.numberOFMessagesAreNotSeen= snapshot.data.data()['messagesArenotSeen'];
+                                                                            cache1= snapshot.data;
 
                                                                             return Container(
                                                                               child: index >= snapshot.data.data()['messagesArenotSeen']
@@ -330,4 +335,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }),
     );
   }
+
 }
+
+

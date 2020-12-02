@@ -19,6 +19,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       startConversion(email: event.email,roomId:event.roomId ,mobileToken:event.mobileToken );
       yield SwitchToChatScreenState();
     }
+
   }
 
 
@@ -26,6 +27,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
     String lastMessage, sender;
     int unSeenMessages;
     bool heBlocked,youBlocked;
+    String time;
 
     List<String> users = [email, FirebaseAuth.instance.currentUser.email];
 
@@ -39,13 +41,14 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       unSeenMessages = value.data()['messagesArenotSeen'];
       youBlocked = value.data()[email.replaceAll('.', '_')];
       heBlocked = value.data()[FirebaseAuth.instance.currentUser.email.replaceAll('.', '_')];
+      time = value.data()['timeStamp'];
 
     });
 
     Map<String, dynamic> chatRoomMap = {
       "users": users,
       "chatRoomId": roomId,
-      "timeStamp": DateTime.now().toString().toString(),
+      "timeStamp": time,
       'lastMessage': lastMessage,
       'messagesArenotSeen': sender == FirebaseAuth.instance.currentUser.email
           ? unSeenMessages
@@ -57,7 +60,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
     await FirebaseFirestore.instance
         .collection('ChatRoom')
         .doc(roomId)
-        .set(chatRoomMap)
+        .update(chatRoomMap)
         .catchError((onError) {
       print(onError);
     });

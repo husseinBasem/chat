@@ -11,23 +11,15 @@ class LoginInitial extends LoginStates {
 
 
 
-class SpinnerOnState extends LoginStates {
+class SpinnerState extends LoginStates {
   final bool spinner;
 
-  SpinnerOnState({this.spinner});
+  SpinnerState({this.spinner});
 
   @override
   List<Object> get props => [spinner];
 }
 
-class SpinnerOffState extends LoginStates {
-  final bool spinner;
-
-  SpinnerOffState({this.spinner});
-
-  @override
-  List<Object> get props => [spinner];
-}
 
 class ChangeInputEmailState extends LoginStates {
   final String email;

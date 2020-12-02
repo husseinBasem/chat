@@ -9,9 +9,6 @@ class ChatListInitial extends ChatListState {
   List<Object> get props => [];
 }
 
-
-
-
 class SwitchToChatScreenState extends ChatListState {
   @override
   List<Object> get props => [];

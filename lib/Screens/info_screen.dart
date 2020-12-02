@@ -19,6 +19,8 @@ class Info extends StatefulWidget {
 
 class _InfoState extends State<Info> {
   InfoBloc infoBloc;
+  var cache;
+
 
   @override
   void initState() {
@@ -78,6 +80,7 @@ class _InfoState extends State<Info> {
                   height: 60.0,
                 ),
                 FutureBuilder(
+                  initialData: cache,
                   future: FirebaseFirestore.instance
                       .collection('users')
                       .doc(widget.email)
@@ -87,6 +90,7 @@ class _InfoState extends State<Info> {
                         roomId: widget.roomId, email: widget.email));
 
                      if (snapshot.hasData) {
+                       cache = snapshot.data;
                       return Column(
                         children: <Widget>[
                           ImageWidget(

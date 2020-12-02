@@ -81,6 +81,7 @@ if (event is SecondCheckUserEvent) {
     String temp = "";
     for (int i = 0; i < caseNumber.length; i++) {
       temp = temp + caseNumber[i];
+      if(temp.length>=3)
       caseSearchList.add(temp);
     }
     return caseSearchList;
@@ -116,7 +117,6 @@ if (event is SecondCheckUserEvent) {
       })
           .catchError((error) {
 
-            print("Failed to add user: $error");
             somethingWrong=true;
 
           });

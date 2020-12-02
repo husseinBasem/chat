@@ -20,6 +20,8 @@ class Edit extends StatefulWidget {
 class _EditState extends State<Edit> {
   EditBloc editBloc;
   String _userName,_firstLetter;
+  var cache;
+
 
 
   @override
@@ -95,12 +97,14 @@ class _EditState extends State<Edit> {
                       ),
 
                       FutureBuilder(
+                        initialData: cache,
                           future: FirebaseFirestore.instance
                               .collection('users')
                               .doc(FirebaseAuth.instance.currentUser.email)
                               .get(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
+                              cache = snapshot.data;
                               if (editBloc.fullName == null) {
                                 editBloc.fullName =
                                 snapshot.data.data()['Name'];

@@ -17,6 +17,8 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   ChatListBloc bloc;
+  var cache;
+
 
 
 
@@ -66,6 +68,7 @@ class _ChatListState extends State<ChatList> {
                         height: 15.0,
                       ),
                       StreamBuilder(
+                        initialData: cache,
                           stream: FirebaseFirestore.instance
                               .collection('ChatRoom')
                               .orderBy('timeStamp', descending: true)
@@ -76,8 +79,8 @@ class _ChatListState extends State<ChatList> {
                           builder: (context, snapshot) {
                             bool showIcon = false;
                              if (snapshot.hasData) {
+                               cache = snapshot.data;
                               return ListView.builder(
-//                                physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: snapshot.data.docs.length,
                                 itemBuilder: (context, index) {

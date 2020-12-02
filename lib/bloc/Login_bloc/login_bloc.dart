@@ -20,32 +20,30 @@ class LoginBloc extends Bloc<LoginEvents, LoginStates> {
   Stream<LoginStates> mapEventToState(
     LoginEvents event,
   ) async* {
-    if (event is SpinnerOnEvent) {
-      yield SpinnerOnState(spinner: spinner = true);
-    }
 
-    if (event is SpinnerOffEvent) {
-      yield SpinnerOffState(spinner: spinner = false);
-    }
+
+
 
     if (event is ChangeInputEmailEvent) {
       yield ChangeInputEmailState(email: errorEmail = null);
     }
-    if (event is ChangeInputPasswordEvent) {
+    else if (event is ChangeInputPasswordEvent) {
       yield ChangeInputPasswordState(password: errorPassword = null);
     }
 
-    if (event is LoggedInEvent &&
-        errorEmail == null &&
-        errorPassword == null &&
-        somethingWrong == false) {
-      yield LoggedInState();
-    }
 
-    if (event is LoginEvent) {
+
+    else if (event is LoginEvent) {
+      yield SpinnerState(spinner: spinner=true);
       await login(event.email, event.password);
+      if (errorEmail != null || errorPassword != null || somethingWrong != false){
+         yield SpinnerState(spinner: spinner=false);
+         yield LoginState();
+         return;
+      }
       await updateToken(event.email);
-      yield LoginState();
+      yield SpinnerState(spinner: spinner=false);
+      yield LoggedInState();
     }
 
 
