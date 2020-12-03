@@ -22,26 +22,19 @@ class CheckUserState extends RegisterState {
   CheckUserState({this.error});
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => [this.error];
 }
 
-class SpinnerOnState extends RegisterState {
+class SpinnerState extends RegisterState {
   final bool spinner;
 
-  SpinnerOnState({this.spinner});
+  SpinnerState({this.spinner});
 
   @override
-  List<Object> get props => [spinner];
+  List<Object> get props => [this.spinner];
 }
 
-class SpinnerOffState extends RegisterState {
-  final bool spinner;
 
-  SpinnerOffState({this.spinner});
-
-  @override
-  List<Object> get props => [spinner];
-}
 
 class ChangeInputEmailState extends RegisterState {
   final String email;
@@ -49,7 +42,7 @@ class ChangeInputEmailState extends RegisterState {
   ChangeInputEmailState({this.email});
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [this.email];
 }
 
 class ChangeInputPasswordState extends RegisterState {
@@ -58,7 +51,7 @@ class ChangeInputPasswordState extends RegisterState {
   ChangeInputPasswordState({this.password});
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => [this.password];
 }
 
 class RegisteredState extends RegisterState {

@@ -13,7 +13,7 @@ class AddUserEvent extends RegisterEvent {
   );
 
   @override
-  List<Object> get props => [userName, email, password, name];
+  List<Object> get props => [this.userName, this.email, this.password, this.name];
 }
 
 class CheckUserEvent extends RegisterEvent {
@@ -22,7 +22,7 @@ class CheckUserEvent extends RegisterEvent {
   CheckUserEvent({this.userName});
 
   @override
-  List<Object> get props => [userName];
+  List<Object> get props => [this.userName];
 }
 
 class SecondCheckUserEvent extends RegisterEvent {
@@ -32,20 +32,7 @@ class SecondCheckUserEvent extends RegisterEvent {
   List<Object> get props => [];
 }
 
-class SpinnerOnEvent extends RegisterEvent {
-  @override
-  List<Object> get props => [];
-}
 
-class SpinnerOffEvent extends RegisterEvent {
-  @override
-  List<Object> get props => [];
-}
-
-class InitialEvent extends RegisterEvent {
-  @override
-  List<Object> get props => [];
-}
 
 class ChangeInputEmailEvent extends RegisterEvent {
   @override
@@ -57,7 +44,3 @@ class ChangeInputPasswordEvent extends RegisterEvent {
   List<Object> get props => [];
 }
 
-class RegisteredEvent extends RegisterEvent {
-  @override
-  List<Object> get props => [];
-}

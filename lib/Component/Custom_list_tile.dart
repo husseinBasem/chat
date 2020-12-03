@@ -49,7 +49,8 @@ class CustomListTile extends StatelessWidget {
                               FirebaseAuth.instance.currentUser.email,
                               snapshot.data.docs[index]
                                   .data()['Email']) ,email:snapshot.data.docs[index]
-                                          .data()['Email'] ));
+                                          .data()['Email']
+                      ));
 
 
                       chatListBloc.startConversion(
@@ -68,7 +69,8 @@ class CustomListTile extends StatelessWidget {
                           token: snapshot.data.docs[index]
                               .data()['mobileToken'],
                           email: snapshot.data.docs[index]
-                              .data()['Email']),dx: 1.0,dy: 0.0));
+                              .data()['Email']),dx: 1.0,dy: 0.0
+                      ));
 
 
 

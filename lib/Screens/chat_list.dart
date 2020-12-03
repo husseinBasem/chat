@@ -34,6 +34,7 @@ class _ChatListState extends State<ChatList> {
       create: (context) => ChatListBloc(),
       child: Scaffold(
         backgroundColor: Colors.white10,
+        resizeToAvoidBottomInset: false,
 
         body: SafeArea(
             child: BlocBuilder<ChatListBloc, ChatListState>(
@@ -47,7 +48,7 @@ class _ChatListState extends State<ChatList> {
                       Container(
                         alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width,
-                        height: 25.0,
+                        height: 30.0,
                         child: Text(
                           'Chats',
                           style: TextStyle(color: Colors.white, fontSize: 25.0,letterSpacing: 2,fontFamily: 'Cookie'),
@@ -58,8 +59,10 @@ class _ChatListState extends State<ChatList> {
                       ),
                       Padding(
                         padding:  EdgeInsets.symmetric(horizontal: 7.0),
-                        child: SearchWidget(onTap: (){
-                          Navigator.push(context,SlideRightRoute(page: SearchScreen(),dx: 1.0,dy: 0.0) );},
+                        child: SearchWidget(
+                          onTap: (){
+                          Navigator.push(context,SlideRightRoute(page: SearchScreen(),dx: 1.0,dy: 0.0) );
+                          },
                           autofocus: false,
                           readonly: true,
                         ),
@@ -84,12 +87,6 @@ class _ChatListState extends State<ChatList> {
                                 shrinkWrap: true,
                                 itemCount: snapshot.data.docs.length,
                                 itemBuilder: (context, index) {
-
-
-
-
-
-
 
 
                                   if (FirebaseAuth.instance.currentUser.email ==snapshot.data.docs[index].data()['users'][0]) {

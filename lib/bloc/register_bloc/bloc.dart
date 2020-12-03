@@ -17,15 +17,7 @@ bool somethingWrong=false;
   @override
   Stream<RegisterState> mapEventToState(RegisterEvent event) async* {
 
-    if (event is SpinnerOnEvent){
-      yield SpinnerOnState(spinner: showSpinner =true);
 
-    }
-
-    if (event is SpinnerOffEvent){
-      yield SpinnerOffState(spinner: showSpinner =false);
-
-    }
 
 if (event is CheckUserEvent) {
 
@@ -35,16 +27,27 @@ if (event is CheckUserEvent) {
   }
 }
 
-if (event is SecondCheckUserEvent) {
+   else if (event is SecondCheckUserEvent) {
     yield CheckUserState(error: userName = null);
 }
 
    else if(event is AddUserEvent){
 
-       await registerUser(event.email,event.password,event.userName,event.name);
-      yield AddUserState();
+     yield SpinnerState(spinner: showSpinner=true);
 
-    }
+       await registerUser(event.email,event.password,event.userName,event.name);
+       if(userName != null || email != null || password !=null || somethingWrong != false){
+         yield SpinnerState(spinner: showSpinner=false);
+         yield AddUserState();
+         return;
+
+       }
+     yield SpinnerState(spinner: showSpinner=false);
+     yield RegisteredState();
+
+
+
+}
 
    else if (event is ChangeInputEmailEvent){
      yield ChangeInputEmailState(email: email=null);
@@ -54,9 +57,7 @@ if (event is SecondCheckUserEvent) {
       yield ChangeInputPasswordState(password: password = null);
     }
 
-    else if (event is RegisteredEvent && userName == null && email == null && password ==null && somethingWrong == false){
-      yield RegisteredState();
-    }
+
 
 
 
@@ -132,8 +133,8 @@ if (event is SecondCheckUserEvent) {
         email = 'can\'t leave this field empty';
       } else if (e.toString().contains('weak-password')) {
         password = 'Please Write at Least 6 characters';
-      } else
-        print(e.toString());
+      } 
+
     }
 
 

@@ -27,7 +27,7 @@ class ImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+//      overflow: Overflow.visible,
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
         CachedNetworkImage(
@@ -49,8 +49,8 @@ class ImageWidget extends StatelessWidget {
             ),
           errorWidget:(context,url,error)=>
               Container(
-                height: height,  //110.0
-                width: width,    //100
+                height: height,
+                width: width,
                 decoration: BoxDecoration(
 
                   borderRadius: BorderRadius.circular(100),

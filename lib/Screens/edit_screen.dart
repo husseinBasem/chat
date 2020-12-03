@@ -64,7 +64,7 @@ class _EditState extends State<Edit> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             ButtonTheme(
-                              padding: EdgeInsets.only(right: 30.0,left: 5.0),
+                              padding: EdgeInsets.only(right: 30.0,left: 10.0),
                               child: FlatButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -153,7 +153,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
                                   child: Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text('Enter your name and add an optional profile photo.',style: TextStyle(color: Colors.white,fontFamily: 'Lora'),)),
+                                      child: Text('Enter your name and add an optional profile photo.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 14.0),)),
                                 ),
                                 SizedBox(height: 25.0,),
                                 Divider(
@@ -173,7 +173,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('Any details such as age, occupation or city.\nExample: 23 y.o. designer from San Francisco.',style: TextStyle(color: Colors.white,fontFamily: 'Lora'),
+                                    child: Text('Any details such as age, occupation or city.\nExample: 23 y.o. designer from San Francisco.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 14.0),
 
                                     ),
                                   ),

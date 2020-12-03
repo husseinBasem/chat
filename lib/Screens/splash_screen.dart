@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'Screens/chat_list.dart';
-import 'Screens/login_screen.dart';
-import 'Transition/fade_transition.dart';
+import 'chat_list.dart';
+import 'login_screen.dart';
+import '../Transition/fade_transition.dart';
 
 
 class SplashScreen extends StatefulWidget {

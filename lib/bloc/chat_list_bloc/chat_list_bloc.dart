@@ -16,7 +16,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
     ChatListEvent event,
   ) async* {
  if (event is SwitchToChatScreenEvent){
-      startConversion(email: event.email,roomId:event.roomId ,mobileToken:event.mobileToken );
+       startConversion(email: event.email,roomId:event.roomId ,mobileToken:event.mobileToken );
       yield SwitchToChatScreenState();
     }
 

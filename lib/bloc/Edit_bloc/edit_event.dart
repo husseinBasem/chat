@@ -6,10 +6,7 @@ abstract class EditEvent extends Equatable {
 
 
 
-class UpdateUserImageEvent extends EditEvent {
-  @override
-  List<Object> get props => [];
-}
+
 
 class UpdateUserDetailEvent extends EditEvent {
   @override

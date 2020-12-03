@@ -24,7 +24,7 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
           mobileToken: event.mobileToken);
       yield StartConversationState(email: event.email, roomId: event.roomId);
     } else  if (event is UserBlocEvent) {
-      await bloc(roomId: event.roomId, email: event.email);
+      await block(roomId: event.roomId, email: event.email);
       yield UserBlocState(userBloc: userBloc);
     }
     else if (event is InfoInitialEvent) {
@@ -78,7 +78,7 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
         .update({'chattingWith': mobileToken});
   }
 
-  Future<void> bloc({String roomId, email}) async {
+  Future<void> block({String roomId, email}) async {
     userBloc = !userBloc;
     await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).update(
       {email.replaceAll('.', '_'): userBloc},

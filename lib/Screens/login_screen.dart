@@ -16,10 +16,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
+     {
   String _email, _password;
   LoginBloc bloc;
-@override
 
   @override
   void dispose() {
@@ -121,14 +120,17 @@ class _LoginScreenState extends State<LoginScreen>
                                   },
                                   decoration: KTextFieldDecoration.copyWith(
                                       hintText: 'Enter Your Password',
-                                      errorText: bloc.errorPassword)),
+                                      errorText: bloc.errorPassword)
+                              ),
                               SizedBox(
                                 height: 24.0,
                               ),
                               RoundedButton(
-                                onPressed: (){    bloc.add(LoginEvent(email: _email, password: _password));},
+                                onPressed: (){
+                                  bloc.add(LoginEvent(email: _email, password: _password));
+                                  },
                                 text: 'Log In',
-                                color: Colors.lightBlueAccent,
+                                color: Colors.blueAccent,
 
                               ),
                               SizedBox(

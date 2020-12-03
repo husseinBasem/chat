@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chat/bloc/Chat_bloc/chat_bloc.dart';
-
 import '../Component/image.dart';
 import 'chat_list.dart';
 

@@ -31,8 +31,6 @@ class LoginBloc extends Bloc<LoginEvents, LoginStates> {
       yield ChangeInputPasswordState(password: errorPassword = null);
     }
 
-
-
     else if (event is LoginEvent) {
       yield SpinnerState(spinner: spinner=true);
       await login(event.email, event.password);

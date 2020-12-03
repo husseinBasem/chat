@@ -25,16 +25,12 @@ class EditBloc extends Bloc<EditEvent, EditState> {
     EditEvent event,
   ) async* {
      if (event is DownloadImageEvent) {
-      await downloadImage();
+         await downloadImage();
       yield DownloadImageState();
     } else if (event is GetNameEvent) {
-      await getName();
+       await getName();
       yield GetNameState();
-    } else if (event is UpdateUserImageEvent) {
-      await downloadImage();
-
-      yield UpdateUserImageState();
-    } else if (event is UpdateUserDetailEvent) {
+    }  else if (event is UpdateUserDetailEvent) {
       updateUserDetail();
       yield UpdateUserDetailState();
     } else if (event is GetImageEvent) {
@@ -111,7 +107,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
   }
 
   Future<void> getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
 
     if (pickedFile != null) {

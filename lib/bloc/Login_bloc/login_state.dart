@@ -17,7 +17,7 @@ class SpinnerState extends LoginStates {
   SpinnerState({this.spinner});
 
   @override
-  List<Object> get props => [spinner];
+  List<Object> get props => [this.spinner];
 }
 
 
@@ -27,7 +27,7 @@ class ChangeInputEmailState extends LoginStates {
   ChangeInputEmailState({this.email});
 
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [this.email];
 }
 
 class ChangeInputPasswordState extends LoginStates {
@@ -36,7 +36,7 @@ class ChangeInputPasswordState extends LoginStates {
   ChangeInputPasswordState({this.password});
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => [this.password];
 }
 
 class LoggedInState extends LoginStates {

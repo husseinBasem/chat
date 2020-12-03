@@ -20,9 +20,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   RegisterBloc bloc;
 
+
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    super.dispose();
+    bloc.close();
   }
 
   @override
@@ -43,7 +45,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: BlocListener(
               cubit: bloc,
               listener: (context, state) {
-                bloc = BlocProvider.of<RegisterBloc>(context);
 
                 if (state is RegisteredState) {
                   Navigator.pushAndRemoveUntil(context, FadeRoute(page: ChatList()),(Route<dynamic> route) => false);
@@ -59,6 +60,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     return ModalProgressHUD(
                       inAsyncCall: bloc.showSpinner,
+                      opacity: 0.07,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Container(
@@ -151,7 +153,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                               RoundedButton(
                                 onPressed: () {
-                                  submitRegister();
+                                  bloc.add(AddUserEvent(_userName, _email, _password, _name));
+
                                 },
                                 color: Colors.blueAccent,
                                 text: 'Register',
@@ -161,7 +164,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               ),
                               FlatButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
+
                                 },
                                 child: Text('Switch to Login IN',style: TextStyle(color: Colors.white),),
                               ),
@@ -178,18 +182,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  void submitRegister() {
-    bloc.add(SpinnerOnEvent());
-    bloc.add(AddUserEvent(_userName, _email, _password, _name));
-    bloc.add(SpinnerOffEvent());
-    bloc.add(RegisteredEvent());
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    bloc.close();
-  }
+
 }
 
 
