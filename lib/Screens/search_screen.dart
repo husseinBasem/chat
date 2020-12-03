@@ -38,6 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white10,
+      resizeToAvoidBottomInset: false,
       body: BlocProvider<SearchBloc>(
         create: (context) => SearchBloc(),
         child: SafeArea(

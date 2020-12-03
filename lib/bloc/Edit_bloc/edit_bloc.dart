@@ -31,7 +31,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
        await getName();
       yield GetNameState();
     }  else if (event is UpdateUserDetailEvent) {
-      updateUserDetail();
+      await updateUserDetail();
       yield UpdateUserDetailState();
     } else if (event is GetImageEvent) {
        yield Spinner(spinner: spinner=true);

@@ -18,7 +18,7 @@ class NameWidget extends StatelessWidget {
     return Container(
       color:Colors.white10,
       child: TextFormField(
-        inputFormatters: [LengthLimitingTextInputFormatter(20)],
+        inputFormatters: [LengthLimitingTextInputFormatter(19)],
         onChanged: (value) {
           editBloc.add(ChangeNameEvent(value));
         },

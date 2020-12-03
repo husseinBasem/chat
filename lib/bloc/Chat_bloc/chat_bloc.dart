@@ -24,7 +24,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ChatEvent event,
   ) async* {
     if (event is ChatWithEvent) {
-      chatWith(token: event.token);
+      await chatWith(token: event.token);
       yield ChatWithState();
 
     } else if (event is GetValueEvent) {
@@ -65,10 +65,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> getBlockValue({String roomId, email}) async {
-    await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
+    await _fireStore.collection('ChatRoom').doc(roomId).get().then((value)async  {
       if (value.data() != null)
         youBlocked = value.data()[email.replaceAll('.', '_')];
-        heBlocked = value.data()[FirebaseAuth.instance.currentUser.email.replaceAll('.','_')];
+        heBlocked = value.data()[ FirebaseAuth.instance.currentUser.email.replaceAll('.','_')];
     });
   }
 

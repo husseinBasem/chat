@@ -19,7 +19,7 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   EditBloc editBloc;
-  String _userName,_firstLetter;
+  String _firstLetter,_user;
   var cache;
 
 
@@ -54,6 +54,7 @@ class _EditState extends State<Edit> {
               inAsyncCall: editBloc.spinner,
               child: Container(
                 child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +71,7 @@ class _EditState extends State<Edit> {
                                   Navigator.of(context).pop();
                                 },
                                 child: Text(
-                                  'cancel',
+                                  'Cancel',
                                   style: TextStyle(fontSize: 17,color: Colors.white),
                                 ),
                               ),
@@ -80,14 +81,16 @@ class _EditState extends State<Edit> {
                               child: FlatButton(
                                 onPressed: () {
                                   if (editBloc.userName != null) {
+                                    if(editBloc.fullName.isEmpty ==false&& editBloc.userName.isEmpty ==false){
                                     if (editBloc.userNameError == null) {
                                       editBloc.add(UpdateUserDetailEvent());
                                       Navigator.of(context).pop();
                                     }
+                                    }
                                   }
                                 },
                                 child: Text(
-                                  'done',
+                                  'Done',
                                   style: TextStyle(fontSize: 17,color: Colors.white),
                                 ),
                               ),
@@ -106,15 +109,13 @@ class _EditState extends State<Edit> {
                             if (snapshot.hasData) {
                               cache = snapshot.data;
                               if (editBloc.fullName == null) {
-                                editBloc.fullName =
-                                snapshot.data.data()['Name'];
+                                editBloc.fullName = snapshot.data.data()['Name'];
                                 _firstLetter = editBloc.fullName[0];
                               }
                               if (editBloc.bio == null)
                                 editBloc.bio = snapshot.data.data()['bio'];
-                              _userName = snapshot.data.data()['User'];
-                              editBloc.imageLink =
-                                  snapshot.data.data()['userImage'];
+                              _user = snapshot.data.data()['User'];
+                              editBloc.imageLink = snapshot.data.data()['userImage'];
 
                               return Column(
                                   children: <Widget>[
@@ -153,7 +154,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 5.0),
                                   child: Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text('Enter your name and add an optional profile photo.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 14.0),)),
+                                      child: Text('Enter your name and add an optional profile photo.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 12.0),)),
                                 ),
                                 SizedBox(height: 25.0,),
                                 Divider(
@@ -173,7 +174,7 @@ class _EditState extends State<Edit> {
                                   padding:  EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text('Any details such as age, occupation or city.\nExample: 23 y.o. designer from San Francisco.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 14.0),
+                                    child: Text('Any details such as age, occupation or city. Example: 23 y.o. designer from San Francisco.',style: TextStyle(color: Colors.white,fontFamily: 'Lora',fontSize: 12.0),
 
                                     ),
                                   ),
@@ -190,7 +191,7 @@ class _EditState extends State<Edit> {
                                   height: 0.0,
                                 ),
                                  UserNameWidget(
-                                 editBloc: editBloc, userName: _userName,color: Colors.grey,
+                                 editBloc: editBloc, userName: _user,color: Colors.grey,
                                  ),
                                 Divider(
                                   color: Colors.grey,

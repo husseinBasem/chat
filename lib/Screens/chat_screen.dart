@@ -178,7 +178,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
 
-                Text(widget.name,style: TextStyle(fontSize: 17.0,color: Colors.white,letterSpacing: 2),),
+                Text(widget.name,style: TextStyle(fontSize: 14.0,color: Colors.white,letterSpacing: 2),),
 
                 Padding(
                   padding:  EdgeInsets.all(8.0),
@@ -273,7 +273,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                     child: Text(messages.data()['message'],
 
                                                                       textAlign: TextAlign.left,
-                                                                      style: TextStyle(color: Colors.white, fontSize: 20.0,letterSpacing: 1,fontFamily: 'Markazi'),
+                                                                      style: TextStyle(color: Colors.white, fontSize: 15.0,letterSpacing: 1,fontFamily: 'Markazi'),
                                                                     ),
                                                                   ),
 
@@ -283,7 +283,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                       textAlign: TextAlign.left,
                                                                       style: TextStyle(
                                                                         color: Colors.white,
-                                                                        fontSize: 12.0,
+                                                                        fontSize: 8.0,
                                                                       ),
                                                                     ),
                                                                   ),

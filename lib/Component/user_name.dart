@@ -20,7 +20,7 @@ class UserNameWidget extends StatelessWidget {
       color: Colors.white10,
       child: TextFormField(
         onChanged: (value) {
-          editBloc.add(ChangeUserNameEvent(value));
+          editBloc.add(ChangeUserNameEvent(userName: value));
           if (userName != value) {
             if (editBloc.userNameError == null) {
               editBloc.add(CheckUserEvent(userName: value));

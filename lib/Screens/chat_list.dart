@@ -34,7 +34,8 @@ class _ChatListState extends State<ChatList> {
       create: (context) => ChatListBloc(),
       child: Scaffold(
         backgroundColor: Colors.white10,
-        resizeToAvoidBottomInset: false,
+//        resizeToAvoidBottomInset: false,
+//        resizeToAvoidBottomPadding: false,
 
         body: SafeArea(
             child: BlocBuilder<ChatListBloc, ChatListState>(
@@ -83,44 +84,48 @@ class _ChatListState extends State<ChatList> {
                             bool showIcon = false;
                              if (snapshot.hasData) {
                                cache = snapshot.data;
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data.docs.length,
-                                itemBuilder: (context, index) {
+                              return Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+//                                physics: NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                  itemCount: snapshot.data.docs.length,
+                                  itemBuilder: (context, index) {
 
 
-                                  if (FirebaseAuth.instance.currentUser.email ==snapshot.data.docs[index].data()['users'][0]) {
-                                    showIcon = false;
-                                    return CustomListTile(
-                                      receiverEmail: snapshot.data.docs[index]
-                                          .data()['users'][1],
-                                      lastMessage: snapshot.data.docs[index]
-                                          .data()['lastMessage'],
-                                      messagesUnSeen: snapshot.data.docs[index]
-                                          .data()['messagesArenotSeen'],
-                                      showIcon: showIcon,
-                                      chatListBloc: bloc,
-                                      time: snapshot.data.docs[index]
-                                          .data()['timeStamp'],
-                                    );
-                                  } else if (FirebaseAuth.instance.currentUser.email == snapshot.data.docs[index].data()['users'][1]) {
-                                    showIcon = true;
-                                    return CustomListTile(
-                                      receiverEmail: snapshot.data.docs[index]
-                                          .data()['users'][0],
-                                      lastMessage: snapshot.data.docs[index]
-                                          .data()['lastMessage'],
-                                      messagesUnSeen: snapshot.data.docs[index]
-                                          .data()['messagesArenotSeen'],
-                                      showIcon: showIcon,
-                                      chatListBloc: bloc,
-                                      time: snapshot.data.docs[index]
-                                          .data()['timeStamp'],
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                },
+                                    if (FirebaseAuth.instance.currentUser.email ==snapshot.data.docs[index].data()['users'][0]) {
+                                      showIcon = false;
+                                      return CustomListTile(
+                                        receiverEmail: snapshot.data.docs[index]
+                                            .data()['users'][1],
+                                        lastMessage: snapshot.data.docs[index]
+                                            .data()['lastMessage'],
+                                        messagesUnSeen: snapshot.data.docs[index]
+                                            .data()['messagesArenotSeen'],
+                                        showIcon: showIcon,
+                                        chatListBloc: bloc,
+                                        time: snapshot.data.docs[index]
+                                            .data()['timeStamp'],
+                                      );
+                                    } else if (FirebaseAuth.instance.currentUser.email == snapshot.data.docs[index].data()['users'][1]) {
+                                      showIcon = true;
+                                      return CustomListTile(
+                                        receiverEmail: snapshot.data.docs[index]
+                                            .data()['users'][0],
+                                        lastMessage: snapshot.data.docs[index]
+                                            .data()['lastMessage'],
+                                        messagesUnSeen: snapshot.data.docs[index]
+                                            .data()['messagesArenotSeen'],
+                                        showIcon: showIcon,
+                                        chatListBloc: bloc,
+                                        time: snapshot.data.docs[index]
+                                            .data()['timeStamp'],
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
+                                ),
                               );
                             } else {
                               return Container();

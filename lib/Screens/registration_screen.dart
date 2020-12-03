@@ -167,7 +167,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   Navigator.pop(context);
 
                                 },
-                                child: Text('Switch to Login IN',style: TextStyle(color: Colors.white),),
+                                child: Text('Switch to Login',style: TextStyle(color: Colors.white),),
                               ),
                             ],
                           ),

@@ -11,7 +11,7 @@ part 'info_state.dart';
 class InfoBloc extends Bloc<InfoEvent, InfoState> {
   InfoBloc() : super(InfoInitialState());
 
-  bool userBloc;
+  bool userBloc=false;
 
   @override
   Stream<InfoState> mapEventToState(
@@ -52,7 +52,7 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
           }
     });
 
-    Map<String, dynamic> chatRoomMap = {
+    Map<String, dynamic> chatRoomMap =  {
       "users": users,
       "chatRoomId": roomId,
       "timeStamp": DateTime.now().toString().toString(),
@@ -60,8 +60,8 @@ class InfoBloc extends Bloc<InfoEvent, InfoState> {
       'messagesArenotSeen': sender == FirebaseAuth.instance.currentUser.email
           ? unSeenMessages
           : 0,
-      FirebaseAuth.instance.currentUser.email.replaceAll('.', '_'): false,
-      email.replaceAll('.', '_'): false,
+       FirebaseAuth.instance.currentUser.email.replaceAll('.', '_'): false,
+       email.replaceAll('.', '_'): false,
     };
 
     await FirebaseFirestore.instance

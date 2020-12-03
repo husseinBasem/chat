@@ -21,7 +21,7 @@ class BioWidget extends StatelessWidget {
           onChanged: (value) {
             editBloc.add(ChangeBioEvent(value));
           },
-          inputFormatters: [LengthLimitingTextInputFormatter(140)],
+          inputFormatters: [LengthLimitingTextInputFormatter(139)],
           autocorrect: false,
           maxLines: 5,
           minLines: 1,

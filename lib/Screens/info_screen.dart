@@ -130,7 +130,7 @@ class _InfoState extends State<Info> {
                                 ? null
                                 : Text(
                                     snapshot.data.data()['bio'],
-                                    textAlign: TextAlign.left,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.grey,fontFamily: 'Lora'),
 
                                   ),

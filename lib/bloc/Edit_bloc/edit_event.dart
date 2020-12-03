@@ -49,7 +49,7 @@ class ChangeBioEvent extends EditEvent {
 
 class ChangeUserNameEvent extends EditEvent {
   final String userName;
-  ChangeUserNameEvent(this.userName);
+  ChangeUserNameEvent({this.userName});
   @override
   List<Object> get props => [this.userName];
 }

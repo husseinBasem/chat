@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 const kSendButtonTextStyle = TextStyle(
   color: Colors.lightBlueAccent,
   fontWeight: FontWeight.bold,
-  fontSize: 18.0,
+  fontSize: 14.0,
 
 );
 
 const kMessageTextFileDecoration = InputDecoration(
   contentPadding: EdgeInsets.only(left: 7.0,top: 5.0,bottom: 5.0,),
   hintText: 'Type Your Message Here...',
-  hintStyle: TextStyle(color: Colors.grey),
+  hintStyle: TextStyle(color: Colors.grey,fontSize: 12.0),
   border: InputBorder.none,
+
 //  hintMaxLines: 75,
 
 );
