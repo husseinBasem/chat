@@ -34,8 +34,6 @@ class _ChatListState extends State<ChatList> {
       create: (context) => ChatListBloc(),
       child: Scaffold(
         backgroundColor: Colors.white10,
-//        resizeToAvoidBottomInset: false,
-//        resizeToAvoidBottomPadding: false,
 
         body: SafeArea(
             child: BlocBuilder<ChatListBloc, ChatListState>(
@@ -83,11 +81,12 @@ class _ChatListState extends State<ChatList> {
                           builder: (context, snapshot) {
                             bool showIcon = false;
                              if (snapshot.hasData) {
+                               print(snapshot.hasData);
+
                                cache = snapshot.data;
                               return Expanded(
                                 child: ListView.builder(
                                   shrinkWrap: true,
-//                                physics: NeverScrollableScrollPhysics(),
                                 scrollDirection: Axis.vertical,
                                   itemCount: snapshot.data.docs.length,
                                   itemBuilder: (context, index) {
