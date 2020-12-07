@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen>
                       inAsyncCall: bloc.spinner,
                       opacity: 0.07,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Container(
                           height: double.infinity,
                           child: ListView(

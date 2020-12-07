@@ -278,7 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                   ),
 
                                                                   Padding(
-                                                                    padding:  EdgeInsets.only(right: 0.0,),
+                                                                    padding:  EdgeInsets.only(right: 0.0,left: 5.0),
                                                                     child: Text('   ${messages.data()['timestamp'].substring(10, 16)} ',
                                                                       textAlign: TextAlign.left,
                                                                       style: TextStyle(
