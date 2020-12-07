@@ -90,6 +90,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: FlatButton(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onPressed: () {
+                      chatBloc.add(StartConversationEvent(roomId: widget.roomId,email: widget.email,mobileToken: widget.token));
+
                       messageTextController.clear();
                       chatBloc.add(AddConversationMessageEvent(
                           roomId: widget.roomId,
@@ -99,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           _scrollController.position.minScrollExtent,
                           duration: Duration(milliseconds: 500),
                           curve: Curves.ease);
-                    
+
 
                     },
 

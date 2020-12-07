@@ -9,12 +9,7 @@ class InfoInitialState extends InfoState {
   List<Object> get props => [];
 }
 
-class StartConversationState extends InfoState {
-  final String email, roomId, mobileToken;
-  StartConversationState({this.email, this.roomId, this.mobileToken});
-  @override
-  List<Object> get props => [this.email, this.roomId, this.mobileToken];
-}
+
 
 
 class UserBlocState extends InfoState {

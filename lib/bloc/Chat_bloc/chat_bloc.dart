@@ -12,8 +12,9 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(InitialState());
 
-  bool heBlocked=false,youBlocked = false;
+  bool heBlocked=false,youBlocked = false,isChatExists=true;
   int numberOFMessagesAreNotSeen;
+
 
   Map<String, String> messages = {};
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -51,6 +52,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else if (event is UnBlockEvent){
       await bloc(roomId: event.roomId,email: event.email);
       yield UnBlockState();
+    } else if (event is StartConversationEvent){
+      await startConversion(email: event.email,roomId: event.roomId,mobileToken: event.mobileToken);
+      yield StartConversationState();
+
     }
 
   }
@@ -66,9 +71,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> getBlockValue({String roomId, email}) async {
     await _fireStore.collection('ChatRoom').doc(roomId).get().then((value)async  {
-      if (value.data() != null)
+
+      if (value.data() != null) {
         youBlocked = value.data()[email.replaceAll('.', '_')];
-        heBlocked = value.data()[ FirebaseAuth.instance.currentUser.email.replaceAll('.','_')];
+        heBlocked =
+        value.data()[ FirebaseAuth.instance.currentUser.email.replaceAll(
+            '.', '_')];
+      }
     });
   }
 
@@ -152,6 +161,63 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await FirebaseFirestore.instance.collection('ChatRoom').doc(roomId).update(
       {email.replaceAll('.', '_'): false},
     );
+  }
+
+
+
+
+  startConversion({String email, roomId, mobileToken}) async {
+
+
+    List<String> users = [email, FirebaseAuth.instance.currentUser.email];
+
+    await FirebaseFirestore.instance.collection('ChatRoom').get().then((QuerySnapshot querySnapshot) async {
+      for(var doc in querySnapshot.docs) {
+        if (roomId == doc['chatRoomId'])  {
+          isChatExists=true;
+          break;
+
+        }
+        else{
+          isChatExists = false;
+        }
+      }
+
+      if (!isChatExists){
+
+
+        Map<String, dynamic> chatRoomMap =  {
+          "users": users,
+          "chatRoomId": roomId,
+          "timeStamp": DateTime.now().toString().toString(),
+          'lastMessage': '',
+          'messagesArenotSeen': 0,
+          FirebaseAuth.instance.currentUser.email.replaceAll('.', '_'): false,
+          email.replaceAll('.', '_'): false,
+        };
+
+        await FirebaseFirestore.instance
+            .collection('ChatRoom')
+            .doc(roomId)
+            .set(chatRoomMap)
+            .catchError((onError) {
+          print(onError);
+        });
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.email)
+            .update({'chattingWith': mobileToken});
+
+
+
+      }
+
+
+
+    });
+
+
   }
 
 }

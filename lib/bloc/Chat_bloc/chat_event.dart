@@ -55,3 +55,10 @@ class UnBlockEvent extends ChatEvent {
 
 }
 
+class StartConversationEvent extends ChatEvent {
+  final String email, roomId, mobileToken;
+  StartConversationEvent({this.email, this.roomId, this.mobileToken});
+  @override
+  List<Object> get props => [this.email, this.roomId, this.mobileToken];
+}
+

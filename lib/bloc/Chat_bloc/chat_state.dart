@@ -44,4 +44,10 @@ class UnBlockState extends ChatState {
   List<Object> get props => [];
 }
 
+class StartConversationState extends ChatState {
+  StartConversationState();
+  @override
+  List<Object> get props => [];
+}
+
 

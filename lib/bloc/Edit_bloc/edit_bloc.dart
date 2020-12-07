@@ -57,6 +57,7 @@ class EditBloc extends Bloc<EditEvent, EditState> {
         yield CheckUserState(
             error: userNameError = 'This User is Already exists');
       }
+
     } else if (event is SecondCheckUserEvent) {
       yield CheckUserState(error: userNameError = null);
     }

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import '../Component/bio.dart';
 import '../Component/image.dart';
@@ -80,14 +81,29 @@ class _EditState extends State<Edit> {
                               padding: EdgeInsets.only(left: 50.0,right: 5.0),
                               child: FlatButton(
                                 onPressed: () {
-                                  if (editBloc.userName != null) {
+                                  print(editBloc.userNameError);
+                                  if (editBloc.userName != null && editBloc.userName.length>2) {
                                     if(editBloc.fullName.isEmpty ==false&& editBloc.userName.isEmpty ==false){
                                     if (editBloc.userNameError == null) {
                                       editBloc.add(UpdateUserDetailEvent());
                                       Navigator.of(context).pop();
                                     }
+                                    else {
+                                      flutterToast('This User is Already exists');
+
                                     }
+                                    }else{
+;
+
+
+                                      flutterToast('Your Name or Username is Empty');
+                                    }
+                                  }else if(editBloc.userName.length<=2) {
+
+                                    flutterToast('Username Must be Atleast 3 characters');
+
                                   }
+
                                 },
                                 child: Text(
                                   'Done',
@@ -250,6 +266,20 @@ class _EditState extends State<Edit> {
         ),
       ),
     );
+  }
+  void flutterToast(String text){
+
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0,
+
+    );
+
   }
 }
 

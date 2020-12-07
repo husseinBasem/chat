@@ -25,6 +25,10 @@ if (event is CheckUserEvent) {
   if (!userCheck) {
     yield CheckUserState(error: userName = 'This User is Already exists');
   }
+  else if (event.userName.length<3){
+    yield CheckUserState(error: userName = 'Username Must be Atleast 3 characters');
+
+  }
 }
 
    else if (event is SecondCheckUserEvent) {
@@ -34,16 +38,19 @@ if (event is CheckUserEvent) {
    else if(event is AddUserEvent){
 
      yield SpinnerState(spinner: showSpinner=true);
+     await registerUser(event.email,event.password,event.userName,event.name);
 
-       await registerUser(event.email,event.password,event.userName,event.name);
-       if(userName != null || email != null || password !=null || somethingWrong != false){
+     if(userName == null && email == null && password ==null && somethingWrong == false && userName.length>2){
          yield SpinnerState(spinner: showSpinner=false);
-         yield AddUserState();
+         yield RegisteredState();
          return;
 
        }
+
+
+
      yield SpinnerState(spinner: showSpinner=false);
-     yield RegisteredState();
+     yield AddUserState();
 
 
 

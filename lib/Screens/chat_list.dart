@@ -81,7 +81,6 @@ class _ChatListState extends State<ChatList> {
                           builder: (context, snapshot) {
                             bool showIcon = false;
                              if (snapshot.hasData) {
-                               print(snapshot.hasData);
 
                                cache = snapshot.data;
                               return Expanded(

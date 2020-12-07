@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class UserNameWidget extends StatelessWidget {
-  const UserNameWidget({
+   UserNameWidget({
     Key key,
     @required this.editBloc,
     @required this.userName,
@@ -21,13 +21,15 @@ class UserNameWidget extends StatelessWidget {
       child: TextFormField(
         onChanged: (value) {
           editBloc.add(ChangeUserNameEvent(userName: value));
-          if (userName != value) {
+
+          if (userName != value ) {
             if (editBloc.userNameError == null) {
               editBloc.add(CheckUserEvent(userName: value));
             } else {
               editBloc.add(SecondCheckUserEvent());
             }
           }
+
         },
         autocorrect: false,
         maxLines: 1,
@@ -47,10 +49,13 @@ class UserNameWidget extends StatelessWidget {
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
-            errorText: editBloc.userNameError,
             focusedErrorBorder: InputBorder.none,
-            errorStyle: TextStyle(color: Colors.red, height: 0.1)),
+            errorStyle: TextStyle(color: Colors.red, height: 0.1),
+
+        ),
       ),
     );
   }
+
 }
+
