@@ -17,19 +17,21 @@ class AddUserEvent extends RegisterEvent {
 }
 
 class CheckUserEvent extends RegisterEvent {
-  final String userName;
+  final String userNameError;
 
-  CheckUserEvent({this.userName});
+  CheckUserEvent({this.userNameError});
 
   @override
-  List<Object> get props => [this.userName];
+  List<Object> get props => [this.userNameError];
 }
 
 class SecondCheckUserEvent extends RegisterEvent {
-  SecondCheckUserEvent();
+  final String userNameError;
+
+  SecondCheckUserEvent({this.userNameError,});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [this.userNameError];
 }
 
 

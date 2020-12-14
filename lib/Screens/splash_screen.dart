@@ -5,7 +5,7 @@ import 'login_screen.dart';
 import '../Transition/fade_transition.dart';
 
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatefulWidget  {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -16,10 +16,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
+
     Future.delayed(Duration(milliseconds: 2500), () {
       Navigator.pushAndRemoveUntil(context, FadeRoute(page: getWidget()), (Route<dynamic> route) => false);
     });
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

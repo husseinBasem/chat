@@ -137,16 +137,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 textAlign: TextAlign.center,
                                 onChanged: (value) {
                                   _userName = value;
-                                  if (bloc.userName == null) {
-                                    bloc.add(CheckUserEvent(userName: value));
+                                  if (bloc.userNameError == null) {
+                                    bloc.add(CheckUserEvent(userNameError: value,));
                                   } else {
-                                    bloc.add(
-                                        SecondCheckUserEvent());
+                                    bloc.add(SecondCheckUserEvent(userNameError: value));
+                                    bloc.add(CheckUserEvent(userNameError: value,));
+
                                   }
                                 },
                                 decoration: KTextFieldDecoration.copyWith(
                                     hintText: 'Enter Your User',
-                                    errorText: bloc.userName),
+                                    errorText: bloc.userNameError),
                               ),
                               SizedBox(
                                 height: 24.0,

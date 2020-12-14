@@ -141,12 +141,6 @@ class _InfoState extends State<Info> {
                             child: RawMaterialButton(
                                 onPressed:infoBloc.userBloc == false?
                                     () {
-//                                  infoBloc.add(StartConversationEvent(
-//                                      email: widget.email,
-//                                      roomId: widget.roomId,
-//                                      mobileToken: snapshot.data.data()['mobileToken']));
-
-
                                   Navigator.pushAndRemoveUntil(context, SlideRightRoute(page:ChatScreen(
                                       name: snapshot.data.data()['Name'],
                                       roomId: widget.roomId,

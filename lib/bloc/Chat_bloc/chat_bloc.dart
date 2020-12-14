@@ -12,7 +12,7 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(InitialState());
 
-  bool heBlocked=false,youBlocked = false,isChatExists=true;
+  bool heBlocked=false,youBlocked = false,isChatExists;
   int numberOFMessagesAreNotSeen;
 
 
@@ -54,8 +54,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield UnBlockState();
     } else if (event is StartConversationEvent){
       await startConversion(email: event.email,roomId: event.roomId,mobileToken: event.mobileToken);
+      isChatExists = true;
+
       yield StartConversationState();
 
+    }
+    else if (event is CheckChatEvent){
+      await checkChat(roomId: event.roomId);
+      yield CheckChatState();
     }
 
   }
@@ -85,6 +91,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     await _fireStore.collection('ChatRoom').doc(roomId).get().then((value) {
       if (value.data() !=null)
       numberOFMessagesAreNotSeen = value.data()['messagesArenotSeen'];
+      else
+        numberOFMessagesAreNotSeen =0;
+
     });
   }
 
@@ -109,6 +118,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> addConversationMessages(
       {String roomId, message, email, Map<String, String> messageMap}) async {
+
     List<String> users = [email, FirebaseAuth.instance.currentUser.email];
 
     String receivingMessagesEmail, chattingWithToken;
@@ -166,24 +176,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
 
 
-  startConversion({String email, roomId, mobileToken}) async {
+  Future <void>startConversion({String email, roomId, mobileToken}) async {
 
 
     List<String> users = [email, FirebaseAuth.instance.currentUser.email];
 
-    await FirebaseFirestore.instance.collection('ChatRoom').get().then((QuerySnapshot querySnapshot) async {
-      for(var doc in querySnapshot.docs) {
-        if (roomId == doc['chatRoomId'])  {
-          isChatExists=true;
-          break;
 
-        }
-        else{
-          isChatExists = false;
-        }
-      }
-
-      if (!isChatExists){
 
 
         Map<String, dynamic> chatRoomMap =  {
@@ -211,13 +209,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
 
 
+
+
+
+
+
+
+
+  }
+  Future <void> checkChat({String roomId})async{
+
+    await FirebaseFirestore.instance.collection('ChatRoom').get().then((QuerySnapshot querySnapshot) async {
+      for (var doc in querySnapshot.docs) {
+        if (roomId == doc['chatRoomId']) {
+          isChatExists = true;
+          break;
+        }
+        else {
+          isChatExists = false;
+        }
       }
-
-
-
     });
-
-
   }
 
 }

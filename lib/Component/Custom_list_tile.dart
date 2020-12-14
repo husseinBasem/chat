@@ -1,5 +1,4 @@
 import 'package:chat/Transition/slide_right_route.dart';
-import 'package:chat/bloc/chat_list_bloc/chat_list_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +12,12 @@ class CustomListTile extends StatelessWidget {
       this.lastMessage,
       this.messagesUnSeen,
       this.showIcon,
-      this.chatListBloc,
       this.time});
 
   final String receiverEmail, lastMessage,time;
   final int messagesUnSeen;
   final bool showIcon;
   final CreateChatId  createChatId = CreateChatId();
-  final ChatListBloc chatListBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -43,34 +40,18 @@ class CustomListTile extends StatelessWidget {
 
                 onPressed: () {
 
-                      chatListBloc.add(SwitchToChatScreenEvent(
-                          mobileToken:snapshot.data.docs[index].data()['mobileToken'] ,
-                          roomId:createChatId.getChatID(
+
+                  Navigator.pushAndRemoveUntil(context, SlideRightRoute(page:ChatScreen(
+                      name: snapshot.data.docs[index].data()['Name'],
+                      roomId: createChatId.getChatID(
                               FirebaseAuth.instance.currentUser.email,
-                              snapshot.data.docs[index]
-                                  .data()['Email']) ,email:snapshot.data.docs[index]
-                                          .data()['Email']
-                      ));
+                              snapshot.data.docs[index].data()['Email']),
 
+                      image: snapshot.data.docs[index].data()['userImage'],
+                      token: snapshot.data.docs[index].data()['mobileToken'],
+                      email: snapshot.data.docs[index].data()['Email'])
 
-                      chatListBloc.startConversion(
-                          email:snapshot.data.docs[index].data()['Email'],
-                          roomId: createChatId.getChatID(FirebaseAuth.instance.currentUser.email, snapshot.data.docs[index].data()['Email']),
-                          mobileToken: snapshot.data.docs[index].data()['mobileToken']);
-
-                      Navigator.push(context, SlideRightRoute(page: ChatScreen(
-                          name: snapshot.data.docs[index]
-                              .data()['Name'],
-                          roomId: createChatId.getChatID(
-                              FirebaseAuth.instance.currentUser.email,
-                              snapshot.data.docs[index]
-                                  .data()['Email']),
-                          image: snapshot.data.docs[index].data()['userImage'],
-                          token: snapshot.data.docs[index]
-                              .data()['mobileToken'],
-                          email: snapshot.data.docs[index]
-                              .data()['Email']),dx: 1.0,dy: 0.0
-                      ));
+                      ,dx: 1.0,dy: 0.0),(Route<dynamic> route) => false);
 
 
 

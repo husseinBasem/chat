@@ -10,7 +10,7 @@ class RegisterBloc extends Bloc<RegisterEvent,RegisterState>{
 
 
 
-String email,password,userName;
+String email,password,userNameError,userName;
 bool showSpinner=false;
 bool somethingWrong=false;
 
@@ -21,31 +21,37 @@ bool somethingWrong=false;
 
 if (event is CheckUserEvent) {
 
-  final userCheck = await usernameCheck(event.userName);
-  if (!userCheck) {
-    yield CheckUserState(error: userName = 'This User is Already exists');
-  }
-  else if (event.userName.length<3){
-    yield CheckUserState(error: userName = 'Username Must be Atleast 3 characters');
+  if (event.userNameError.length<3){
+    yield CheckUserState(error: userNameError = 'Username Must be Atleast 3 characters');
 
   }
+
+  else if ( !(await usernameCheck(event.userNameError))) {
+    yield CheckUserState(error: userNameError = 'This User is Already exists');
+  }
+
 }
 
    else if (event is SecondCheckUserEvent) {
-    yield CheckUserState(error: userName = null);
+    yield CheckUserState(error: userNameError = null);
+
 }
 
-   else if(event is AddUserEvent){
+   else if(event is AddUserEvent) {
 
-     yield SpinnerState(spinner: showSpinner=true);
-     await registerUser(event.email,event.password,event.userName,event.name);
 
-     if(userName == null && email == null && password ==null && somethingWrong == false && userName.length>2){
-         yield SpinnerState(spinner: showSpinner=false);
-         yield RegisteredState();
-         return;
+  yield SpinnerState(spinner: showSpinner = true);
+  if (userNameError == null && event.userName.length > 2) {
 
-       }
+
+  await registerUser(event.email, event.password, event.userName, event.name);
+
+  if (email == null && password == null && somethingWrong == false) {
+    yield SpinnerState(spinner: showSpinner = false);
+    yield RegisteredState();
+    return;
+  }
+}
 
 
 
@@ -99,9 +105,6 @@ if (event is CheckUserEvent) {
   final _auth = FirebaseAuth.instance;
   final _fireStore = FirebaseFirestore.instance;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
-
-
 
 
 

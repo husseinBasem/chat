@@ -62,3 +62,11 @@ class StartConversationEvent extends ChatEvent {
   List<Object> get props => [this.email, this.roomId, this.mobileToken];
 }
 
+class CheckChatEvent extends ChatEvent{
+  final String roomId;
+  CheckChatEvent({this.roomId});
+  @override
+  List<Object> get props => [this.roomId];
+
+}
+

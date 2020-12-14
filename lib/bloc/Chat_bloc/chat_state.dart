@@ -50,4 +50,9 @@ class StartConversationState extends ChatState {
   List<Object> get props => [];
 }
 
+class CheckChatState extends ChatState{
+  @override
+  List<Object> get props => [];
+}
+
 
