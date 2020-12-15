@@ -67,7 +67,10 @@ class _ChatListState extends State<ChatList>  {
 
 
 
-                           if (snapshot.hasData ) {
+
+
+
+                           if (snapshot.data != null) {
                              cache = snapshot.data;
 
                              if ( snapshot.data.docs.length==0)  {
@@ -79,7 +82,7 @@ class _ChatListState extends State<ChatList>  {
                                      Text('You Don\'t Have Chats, Start Now',style: TextStyle(color: Colors.white,fontSize: 12.0),),
                                    ],),
                                );
-                             }
+                             } else {
                             return Expanded(
                               child: ListView.builder(
                                 shrinkWrap: true,
@@ -123,6 +126,7 @@ class _ChatListState extends State<ChatList>  {
                                 },
                               ),
                             );
+                             }
                           } else{
                              return Container();
 

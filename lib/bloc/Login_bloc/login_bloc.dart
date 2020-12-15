@@ -35,6 +35,7 @@ class LoginBloc extends Bloc<LoginEvents, LoginStates> {
       yield SpinnerState(spinner: spinner=true);
       await login(event.email, event.password);
       if (errorEmail != null || errorPassword != null || somethingWrong != false){
+
          yield SpinnerState(spinner: spinner=false);
          yield LoginState();
          return;

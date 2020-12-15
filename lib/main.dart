@@ -41,7 +41,7 @@ class _ChatState extends State<Chat> with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.detached || state == AppLifecycleState.inactive || state == AppLifecycleState.paused ) {
+    if (state == AppLifecycleState.detached ) {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser.email)
