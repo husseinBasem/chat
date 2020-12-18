@@ -97,14 +97,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
   }
 
-  Future<void> closeScreen() async {
-    await _fireStore
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.email)
-        .update({
-      'chattingWith': null,
-    });
-  }
+
 
   Future<void> messagePlayLoad({String text, token}) async {
     messages = {

@@ -43,7 +43,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     super.dispose();
-    chatBloc.closeScreen();
     chatBloc.close();
   }
 
@@ -252,7 +251,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   final messages = snapshot.data.docs[index];
                                                   final isMe = FirebaseAuth.instance.currentUser.email == messages.data()['sentBy'];
                                                   return Padding(
-                                                    padding: EdgeInsets.only(bottom: 5.0, right: 3.0, left: 3.0),
+                                                    padding: EdgeInsets.only(bottom: 5.0,),
                                                     child: Column(
                                                       crossAxisAlignment: isMe ? CrossAxisAlignment.end
                                                           : CrossAxisAlignment.start,
@@ -267,38 +266,39 @@ class _ChatScreenState extends State<ChatScreen> {
                                                             bottomRight: Radius.circular(30.0),
                                                             topRight: Radius.circular(30.0),
                                                             topLeft: Radius.circular(20.0),),
+
                                                         color: isMe ? Colors.lightBlueAccent.withOpacity(0.5) : Colors.white10,
                                                           child: Padding(padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
                                                             child: Container(
                                                                 constraints: BoxConstraints(
                                                                     maxWidth: MediaQuery.of(context).size.width *0.75),
-
                                                                 child: Row(
                                                                   textDirection: TextDirection.ltr,
                                                                   crossAxisAlignment: CrossAxisAlignment.end,
                                                                   mainAxisSize: MainAxisSize.min,
 
+
                                                                   children: <Widget>[
                                                                     Flexible(
                                                                       child: Text(messages.data()['message'],
 
-                                                                        textAlign: TextAlign.left,
+                                                                        textAlign: TextAlign.right,
                                                                         style: TextStyle(color: Colors.white, fontSize: 15.0,letterSpacing: 1,fontFamily: 'Markazi'),
                                                                       ),
                                                                     ),
 
-                                                                    Padding(
-                                                                      padding:  EdgeInsets.only(right: 0.0,left: 5.0),
-                                                                      child: Text('   ${messages.data()['timestamp'].substring(10, 16)} ',
-                                                                        textAlign: TextAlign.left,
-                                                                        style: TextStyle(
-                                                                          color: Colors.white,
-                                                                          fontSize: 8.0,
-                                                                        ),
+                                                                    SizedBox(width: 5.0,),
+
+                                                                    Text('${messages.data()['timestamp'].substring(10, 16)}',
+                                                                      textAlign: TextAlign.left,
+                                                                      style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontSize: 8.0,
                                                                       ),
                                                                     ),
+                                                                    SizedBox(width: 5.0,),
 
-                                                                    Padding(padding: EdgeInsets.only(top: 7.0),
+                                                                    Container(
                                                                         child: isMe ?
                                                                         StreamBuilder(
                                                                           initialData: cache1,

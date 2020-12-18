@@ -1,3 +1,4 @@
+import 'package:chat/Time.dart';
 import 'package:chat/Transition/slide_right_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../chat_id.dart';
 import '../Screens/chat_screen.dart';
 import 'image.dart';
+
 
 class CustomListTile extends StatelessWidget {
   CustomListTile(
@@ -52,6 +54,7 @@ class CustomListTile extends StatelessWidget {
                       email: snapshot.data.docs[index].data()['Email'])
 
                       ,dx: 1.0,dy: 0.0),(Route<dynamic> route) => false);
+
 
 
 
@@ -112,7 +115,7 @@ class CustomListTile extends StatelessWidget {
 
                         Column(
                           children: <Widget>[
-                            Text('${time.substring(10, 16)}',style: TextStyle(color: Colors.white,),textAlign: TextAlign.start,),
+                            Text(Time().messageTime(time),style: TextStyle(color: Colors.white,),textAlign: TextAlign.start,),
 
                             Container(
                               child: messagesUnSeen == 0 || showIcon == true
@@ -174,4 +177,6 @@ class CustomListTile extends StatelessWidget {
       },
     );
   }
+
+
 }
